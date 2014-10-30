@@ -1,0 +1,45 @@
+{
+  "practice": [
+    {
+      "image": "./practice_image_1.png",
+      "question": {
+        "text": "Question?",
+        "answers": [
+          "Answer A",
+          "Answer B",
+          "Answer C"
+        ],
+        "correct": 0
+      }
+    }
+  ],
+  "performance": [
+    {
+      "images": [
+        "./performance_image_1.png",
+        "./performance_image_2.png",
+        "./performance_image_3.png"
+      ],
+      "questions": [
+        {
+          "text": "Question?",
+          "answers": [
+            "Answer A",
+            "Answer B",
+            "Answer C"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "Question?",
+          "answers": [
+            "Answer A",
+            "Answer B",
+            "Answer C"
+          ],
+          "correct": 0
+        }
+      ]
+    }
+  ]
+}

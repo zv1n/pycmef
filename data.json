@@ -1,0 +1,936 @@
+{
+  "tutorial": [
+    {
+      "image": "./tutorial_air_speed.png",
+      "popovers": [
+        {"pos": [0,0,200,200], "content": "Fuel tank."}
+      ]
+    },
+    {
+      "image": "./tutorial_bearing.png"
+    },
+    {
+      "image": "./tutorial_distance.png"
+    },
+    {
+      "image": "./tutorial_equipment.png"
+    },
+    {
+      "image": "./tutorial_flight_graph.png"
+    },
+    {
+      "image": "./tutorial_flight_profile.png"
+    },
+    {
+      "image": "./tutorial_gauges.png"
+    },
+    {
+      "image": "./tutorial_warnings.png"
+    }
+  ],
+  "practice": [
+    {
+      "image": "./wholistic_1-10.png",
+      "question": [
+        {
+          "text": "What is the status of the landing gear?",
+          "answers": [
+            "Up",
+            "Down",
+            "No Status"
+          ],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "image": "./wholistic_31-40.png",
+      "question": [
+        {
+          "text": "What is the current air speed?",
+          "answers": [
+            "104 mph",
+            "78 mph",
+            "132 mph",
+            "156 mph"
+          ],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "image": "./analytic_41-50.png",
+      "question": [
+        {
+          "text": "What is the exhaust gas temperature?",
+          "answers": [
+            "360 C",
+            "850 C",
+            "102 C",
+            "918 C"
+          ],
+          "correct": 3
+        }
+      ]
+    },
+    {
+      "image": "./analytic_11-20.png",
+      "question": [
+        {
+         "text": "What is the closest mountain range?",
+          "answers": [
+            "Mt. Olympus",
+            "Mt. Ender",
+            "Mt. Tall",
+            "Mt. Flower"
+          ],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "image": "./hybrname_21-30.png",
+      "question": [
+        {
+          "text": "Approximately how many minutes until the first target will be reached?",
+          "answers": [
+            "33 minutes",
+            "63 minutes",
+            "19 minutes",
+            "26 minutes"
+          ],
+          "correct": 3
+        }
+      ]
+    },
+    {
+      "image": "./hybrname_21-30.png",
+      "question": [
+        {
+          "text": "Which direction is the wind blowing?",
+          "answers": [
+            "North",
+            "East",
+            "West",
+            "South"
+          ],
+          "correct": 3
+        }
+      ]
+    }
+  ],
+  "performance": [
+    {
+      "image": "./wholistic_1-10.png",
+      "questions": [
+        {
+          "text": "What mode is the camera set to?",
+          "answers": [
+            "White Hot",
+            "IR",
+            "None"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "How long before the UAV flies over Mt…?",
+          "answers": [
+            "Answer A",
+            "Answer B",
+            "Answer C"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "Which system is displaying a warning?",
+          "answers": [
+            "Hydraulic",
+            "Landing Gear",
+            "Ice Protection",
+            "None"
+          ],
+          "correct": 3
+        },
+        {
+          "text": "How many mountain ranges pose a collision threat for the current path forward?",
+          "answers": [
+            "2",
+            "0",
+            "1",
+            "4"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "How far away is the next  target?",
+          "answers": [
+            "10 miles",
+            "16 miles",
+            "28 miles",
+            "22 miles"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "What is the status of the Laser?",
+          "answers": [
+            "Armed",
+            "Unarmed"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "What is your current heading?",
+          "answers": [
+            "18 degrees",
+            "45 degrees",
+            "52 degrees",
+            "156 degrees"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "Approximately how far away is the snow storm?",
+          "answers": [
+            "33 miles",
+            "10 miles",
+            "26 miles",
+            "16 miles"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "Which aircraft status gauge might be the next to enter the red?",
+          "answers": [
+            "Cylinder Gas Temperature",
+            "Oil Pressure",
+            "Oil Temperature",
+            "Tachometer"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "How many mountain ranges will the UAV fly over on the current flight path?",
+          "answers": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "image": "./analytic_11-20.png",
+      "questions": [
+        {
+          "text": "What is your estimated time of arrival (ETA) to the next target?",
+          "answers": [
+            "10.6 minutes",
+            "33.0 minutes",
+            "12.8 minutes",
+            "16.3 minutes"
+          ],
+          "correct": 3
+        },
+        {
+          "text": "How long before the UAV enters the snow storm?",
+          "answers": [
+            "32.3 minutes",
+            "14.3 minutes",
+            "16.3 minutes",
+            "20.3 minutes"
+          ],
+          "correct": 3
+        },
+        {
+          "text": "What is the current tachometer value?",
+          "answers": [
+            "202 rpm",
+            "820 rpm",
+            "360 rpm",
+            "464 rpm"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "What is the altitude of Mt. Tall?",
+          "answers": [
+            "3,234 ft",
+            "8,200 ft",
+            "11,000 ft",
+            "12,234 ft"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "Where is the target located?",
+          "answers": [
+            "Target is at Mt. Tall",
+            "Target is in the snow storm",
+            "Target is before Mt. Olympus",
+            "Target is at Mt. Olympus"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "What is the current status of your lights?",
+          "answers": [
+            "Answer A",
+            "Answer B",
+            "Answer C"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "What is the current air speed?",
+          "answers": [
+            "Answer A",
+            "Answer B",
+            "Answer C"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "How many miles until the UAV encounters the snow storm?",
+          "answers": [
+            "32.0 miles",
+            "10.3 miles",
+            "24.6 miles",
+            "16.3 miles"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "Which aircraft status gauge has been at a dangerously high level in the past 2 hours?",
+          "answers": [
+            "Oil temperature",
+            "Oil pressure",
+            "Exhaust gas temperature",
+            "Tachometer"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "How much clearance is there between the UAV and Mt. Tall?",
+          "answers": [
+            "8,200 ft",
+            "3,324 ft",
+            "1,234 ft",
+            "11,000 ft"
+          ],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "image": "./hybrname_21-30.png",
+      "questions": [
+        {
+          "text": "What is the current air speed?",
+          "answers": [
+            "140 mph",
+            "125 mph",
+            "120 mph",
+            "99 mph"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "Does the current wind provnamee more of a tailwind or headwind?",
+          "answers": [
+            "Tailwind",
+            "Headwind"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "What is the current exhaust gas temperature reading?",
+          "answers": [
+            "680 C",
+            "340 C",
+            "774 C",
+            "552 C"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "How much clearance is there between the UAV's current altitude and Mt. Bonsai?",
+          "answers": [
+            "2,888 ft",
+            "2,735 ft",
+            "2,034 ft",
+            "1,889 ft"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "Approximately how far away is the next target?",
+          "answers": [
+            "75 miles",
+            "27 miles",
+            "63 miles",
+            "24 miles"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "Is there enough fuel to reach all the targets?",
+          "answers": [
+            "Yes",
+            "No"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "Do either of the mountain ranges poise a collision threat?",
+          "answers": [
+            "Answer A",
+            "Answer B",
+            "Answer C"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "What % chance of hail is there?",
+          "answers": [
+            "30%",
+            "40%",
+            "0%",
+            "15%"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "Are there any system warnings?",
+          "answers": [
+            "Yes",
+            "No"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "How long before the UAV flies over Mt. Stone?",
+          "answers": [
+            "22.6 minutes",
+            "14.7 minutes",
+            "10.3 minutes",
+            "11.0 minutes"
+          ],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "image": "./wholistic_31-40.png",
+      "questions": [
+        {
+          "text": "What is the status of the Laser?",
+          "answers": [
+            "Unarmed",
+            "Armed"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "What is the current wind speed?",
+          "answers": [
+            "35 knots",
+            "10 knots",
+            "18 knots",
+            "15 knots"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "Which system is displaying a warning?",
+          "answers": [
+            "Hydraulic",
+            "Landing Gear",
+            "Ice Protection",
+            "None"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "Do either of the mountain ranges poise a collision threat?",
+          "answers": [
+            "Yes",
+            "No"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "Will the UAV pass over/through the snow storm or the first mountain range first?",
+          "answers": [
+            "First mountain range",
+            "Snow Storm",
+            "Neither are in the UAV flight path"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "How many targets will be reached before the UAV runs out of fuel?",
+          "answers": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "Where is the current target?",
+          "answers": [
+            "Before teh snow storm",
+            "Between the two mountains",
+            "After the 2nd mountain",
+            "None of the above"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "What kind of adverse weather might be encountered?",
+          "answers": [
+            "Fog",
+            "Rain",
+            "Snow",
+            "Wind"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "Which aircraft status gauge might be the next to enter the red?",
+          "answers": [
+            "Cylinder gas temperature",
+            "Oil pressure",
+            "Oil temperature",
+            "Exhaust gas temperature"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "How many mountains need to be passed over before reaching the target?",
+          "answers": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "image": "./analytic_41-50.png",
+      "questions": [
+        {
+          "text": "Approximately how far away is the next target?",
+          "answers": [
+            "33 miles",
+            "40 miles",
+            "11 miles",
+            "27 miles"
+          ],
+          "correct": 3
+        },
+        {
+          "text": "Which direction is the wind blowing?",
+          "answers": [
+            "N",
+            "S",
+            "SE",
+            "SW"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "What is the exhaust gas temperature?",
+          "answers": [
+            "1011 C",
+            "846 C",
+            "141 C",
+            "918 C"
+          ],
+          "correct": 3
+        },
+        {
+          "text": "What is the altitude of Mt. Bee?",
+          "answers": [
+            "3,234 ft",
+            "8,200 ft",
+            "11,000 ft",
+            "12,234 ft"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "What obstacle or terrain poises a threat at the current altitude?",
+          "answers": [
+            "Mt. Tower",
+            "Mt. Pair",
+            "Mt. Bee",
+            "Mt. Tall"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "What is the forecast for the snow storm?",
+          "answers": [
+            "No Snow",
+            "5-15 kts winds, Heavy snow",
+            "10-20 kts winds, Light snow",
+            "Flurries"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "How many miles has the UAV flown so far?",
+          "answers": [
+            "59 miles",
+            "45 miles",
+            "42 miles",
+            "33 miles"
+          ],
+          "correct": 3
+        },
+        {
+          "text": "How many targets will be reached before the UAV runs out of fuel?",
+          "answers": [
+            "0 answer not verfied",
+            "1",
+            "2",
+            "3"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "Which aircraft status gauge might be the next to enter the red?",
+          "answers": [
+            "Oil Temperature",
+            "Oil Pressure",
+            "Air Speed",
+            "Tachometer"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "What is the status of the landing gear?",
+          "answers": [
+            "Answer A",
+            "Answer B",
+            "Answer C"
+          ],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "image": "./hybrname_51-60.png",
+      "questions": [
+        {
+          "text": "How much clearnce is there between the UAV and Mt….",
+          "answers": [
+            "Answer A",
+            "Answer B",
+            "Answer C"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "Are there any active warnings?",
+          "answers": [
+            "Yes",
+            "No"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "What is the altitude of Mt. Ender?",
+          "answers": [
+            "11,000 ft",
+            "10,200 ft",
+            "8,200 ft",
+            "9,826 ft"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "Do you have enough fuel to reach all targets?",
+          "answers": [
+            "Yes",
+            "No"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "What is your estimate time of arrival (ETA) to target 1?",
+          "answers": [
+            "10.3 minutes",
+            "16.3 minutes",
+            "26.4 minutes",
+            "20.7 minutes"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "How many targets does this mission contain?",
+          "answers": [
+            "1",
+            "3",
+            "2",
+            "5"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "What is your current heading?",
+          "answers": [
+            "18 degrees",
+            "52 degrees",
+            "225 degrees",
+            "156 degrees"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "What is the current status of your lights?",
+          "answers": [
+            "On",
+            "Off"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "How far is it to the nearest weather?",
+          "answers": [
+            "16.0 miles",
+            "14.6 miles",
+            "25.8 miles",
+            "32.0 miles"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "What aircraft status gauge is in a dangerous level?",
+          "answers": [
+            "Tachometer",
+            "Exhaust gas temperature",
+            "Oil temperature",
+            "Cylinder gas temperature"
+          ],
+          "correct": 0
+        }
+      ]
+    }
+  ],
+  "perference": [
+    {
+      "image_set": [
+        "./preference_analytic_1.png",
+        "./preference_hybrname_1.png",
+        "./preference_wholistic_1.png"
+      ],
+      "questions": [
+        {
+          "text": "What mode is the camera set to?",
+          "answers": [
+            "White Hot",
+            "IR",
+            "None"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "What is the current wind speed?",
+          "answers": [
+            "34 knots",
+            "10 knots",
+            "3 knots",
+            "15 knots"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "Which system is displaying a warning?",
+          "answers": [
+            "Hydraulic",
+            "Landing Gear",
+            "Ice Protection",
+            "None"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "How many mountain ranges pose a collision threat for the current path forward?",
+          "answers": [
+            "2",
+            "0",
+            "1",
+            "4"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "What is your estimated time of arrival (ETA) to the next target?",
+          "answers": [
+            "10 minutes",
+            "16 minutes",
+            "19 minutes",
+            "28 minutes"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "What is the status of the Laser?",
+          "answers": [
+            "Armed",
+            "Unarmed"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "What is your current heading?",
+          "answers": [
+            "18 degrees",
+            "45 degrees",
+            "52 degrees",
+            "156 degrees"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "Will the snow storm hit before or after the target is reached?",
+          "answers": [
+            "Before",
+            "After"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "Which aircraft status is in the red?",
+          "answers": [
+            "Cylinder Gas Temperature",
+            "Oil Pressure",
+            "Oil Temperature",
+            "Tachometer"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "How many mountain ranges will the UAV fly over on the current flight path?",
+          "answers": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "image_set": [
+        "./preference_analytic_2.png",
+        "./preference_hybrname_2.png",
+        "./preference_wholistic_2.png"
+      ],
+      "questions": [
+        {
+          "text": "What is the current air speed?",
+          "answers": [
+            "140 mph",
+            "125 mph",
+            "120 mph",
+            "151 mph"
+          ],
+          "correct": 3
+        },
+        {
+          "text": "Does the current wind provnamee more of a tailwind, headwind, or snameewind?",
+          "answers": [
+            "Tailwind",
+            "Headwind",
+            "Snameewind"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "Does the UAV have enough clearance to fly over the anti-aircraft at the current altitude?",
+          "answers": [
+            "Yes",
+            "No"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "How much clearance is there between the UAV's current altitude and the 2nd mountain range?",
+          "answers": [
+            "1,888 ft",
+            "3,234 ft",
+            "4,432 ft",
+            "1,009 ft"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "How far away is the next target?",
+          "answers": [
+            "10.6 miles",
+            "27.0 miles",
+            "63.2 miles",
+            "24.4 miles"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "Is there enough fuel to reach all the targets?",
+          "answers": [
+            "Yes",
+            "No"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "How many targets are planned for this mission?",
+          "answers": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "correct": 2
+        },
+        {
+          "text": "What is the current wind speed?",
+          "answers": [
+            "12 knots",
+            "10 knots",
+            "24 knots",
+            "8 knots"
+          ],
+          "correct": 1
+        },
+        {
+          "text": "Are there any system warnings?",
+          "answers": [
+            "Yes",
+            "No"
+          ],
+          "correct": 0
+        },
+        {
+          "text": "What is the cylinder gas temperature?",
+          "answers": [
+            "202 C",
+            "402 C",
+            "1011 C",
+            "98 C"
+          ],
+          "correct": 2
+        }
+      ]
+    }
+  ]
+}
