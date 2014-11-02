@@ -1,7 +1,11 @@
 {
   "practice": [
     {
-      "image": "./practice_image_1.png",
+      "images": [
+        "./practice_image_1.png",
+        "./practice_image_2.png",
+        "./practice_image_3.png"
+      ],
       "question": {
         "text": "Question?",
         "answers": [
@@ -15,7 +19,7 @@
   ],
   "performance": [
     {
-      "images": [
+      "image_sets": [
         "./performance_image_1.png",
         "./performance_image_2.png",
         "./performance_image_3.png"

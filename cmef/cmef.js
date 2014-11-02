@@ -22,15 +22,19 @@ window.onload = function () {
   };
 
   var init_cmef = function() {
-    cmef.initialized = true;
+    window.cmef = (function() {
+      this.initialized = true;
 
-    cmef.prototype.experiment = function() {
-      alert(this._experiment);
-      return JSON.parse(this._experiment);
-    }
+      this.experiment = function() {
+        console.log(this._experiment);
+        return JSON.parse(this._experiment.experiment);
+      };
 
-    alert('alibaba~!');
+      return this;
+    })();
+
     $('body').show();
+    cmef.experiment();
   }
 
   load_jquery(init_cmef);
