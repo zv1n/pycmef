@@ -5,7 +5,7 @@ import sys
 import json
 from yaml import safe_load
 
-class DataSet: 
+class DataSet:
   def __init__(self, dict):
     self.data = dict
     self.process()

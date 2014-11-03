@@ -1,10 +1,6 @@
 
 /* CMEF css */
-html {
-  background-color: red;
-}
 
-body {
-  background-color: blue;
+.hidden-until-load {
   display: none;
-};
+}

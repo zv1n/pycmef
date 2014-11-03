@@ -1,37 +1,38 @@
 {
   "experiment": "Exp 2",
+  "fullscreen": true,
   "sections": [
     {
       "name": "tutorial",
       "subsections": [
         {
-          "name": "Introduction"
+          "name": "introduction"
         },
         {
-          "name": "Tutorial Instructions"
+          "name": "transition"
         },
         {
-          "name": "Tutorial",
+          "name": "tutorial",
           "iterations": 8,
           "order":"sequential",
           "data": "tutorial",
           "constraint": {
-            "name": "image",
+            "name": "image"
           }
         }
       ]
     },
     {
-      "name": "Practice",
+      "name": "practice",
       "subsections": [
         {
-          "name": "Practice Instructions"
+          "name": "instructions"
         },
         {
-          "name": "Practice",
+          "name": "practice",
           "iterations": 6,
           "order":"sequential",
-          "data": "Practice",
+          "data": "practice",
           "constraint": {
             "name": "question",
             "compare": "equal",
@@ -39,21 +40,21 @@
             }
         },
         {
-           "name": "Practice Conclusion"
+           "name": "conclusion"
         }
       ]
     },
     {
-      "name": "Performance",
+      "name": "performance",
       "subsections": [
         {
-          "name": "Performance Instructions"
+          "name": "performance instructions"
         },
         {
-          "name": "Performance",
+          "name": "performance",
           "iterations": 60,
           "order":"sequential",
-          "data": "Performance",
+          "data": "performance",
           "constraint": {
             "name": "question",
             "compare": "equal",
@@ -61,21 +62,21 @@
           }
         },
         {
-           "name": "Performance Conclusion"
+           "name": "conclusion"
         }
       ]
     },
     {
-      "name": "Preference",
+      "name": "preference",
       "subsections": [
         {
-          "name": "Preference Instructions"
+          "name": "instructions"
         },
         {
-          "name": "Preference",
+          "name": "preference",
           "iterations": 20,
           "order":"sequential",
-          "data": "Preference",
+          "data": "preference",
           "constraint": {
             "name": "question",
             "compare": "equal",
@@ -83,21 +84,21 @@
            }
         },
         {
-           "name": "Preference Conclusion"
+           "name": "conclusion"
         }
       ]
     },
     {
-      "name": "Questionnaire",
+      "name": "questionnaire",
       "subsections": [
         {
-          "name": "Questionnaire Instructions"
+          "name": "questionnaire Instructions"
         },
         {
-          "name": "Questionnaire",
+          "name": "questionnaire",
           "iterations": 5,
           "order":"sequential",
-          "data": "Questionnaire",
+          "data": "questionnaire",
           "constraint": {
             "name": "question",
             "compare": "equal",
@@ -105,7 +106,7 @@
           }
         },
         {
-           "name": "Questionnaire Conclusion"
+           "name": "conclusion"
         }
       ]
     }
@@ -114,30 +115,38 @@
     "tutorial": [
       {
         "image": "./tutorial_air_speed.png",
+        "text": "Air Speed Gauge",
         "popovers": [
           {"pos": [0,0,200,200], "content": "Fuel tank."}
         ]
       },
       {
-        "image": "./tutorial_bearing.png"
+        "image": "./tutorial_bearing.png",
+        "text": "Bearing Gauge"
       },
       {
-        "image": "./tutorial_distance.png"
+        "image": "./tutorial_distance.png",
+        "text": "Distance Gauge"
       },
       {
-        "image": "./tutorial_equipment.png"
+        "image": "./tutorial_equipment.png",
+        "text": "Equipment Gauges"
       },
       {
-        "image": "./tutorial_flight_graph.png"
+        "image": "./tutorial_flight_graph.png",
+        "text": "Flight Path Graph"
       },
       {
-        "image": "./tutorial_flight_profile.png"
+        "image": "./tutorial_flight_profile.png",
+        "text": "Flight Path Graph Profile View"
       },
       {
-        "image": "./tutorial_gauges.png"
+        "image": "./tutorial_gauges.png",
+        "text": "Gauges"
       },
       {
-        "image": "./tutorial_warnings.png"
+        "image": "./tutorial_warnings.png",
+        "text": "Warnings"
       }
     ],
     "practice": [

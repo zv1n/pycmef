@@ -4,6 +4,8 @@ import json
 
 from yaml import safe_load
 
+from pycmef.section import Section
+
 """
   Load the experiment information from the JSON/YAML files.
 """
@@ -14,20 +16,10 @@ class ExperimentLoader:
     self.process_config()
 
   def process_config(self):
-    self.core()
-
-  def core(self):
     self.exp.data = self.exp_data
     self.exp.name = self.exp_data.get('experiment', 'Unnamed')
     self.exp.fullscreen = self.exp_data.get('fullscreen', False)
-
-    try:
-      self.exp.sections = self.exp_data['sections']
-    except KeyError:
-      raise Exception('Experiment must contain at least 1 section.')
-
-  def sections(self):
-    return
+    self.exp.process_sections()
 
   # Helpers to load the experiment File
   def load(self, file):

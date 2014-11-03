@@ -15,10 +15,8 @@ from pycmef.utils.page import EnhancedPage
 class EnhancedBrowser(QWidget):
   def __init__(self):
     super(EnhancedBrowser, self).__init__()
-    self.view = QWebView(self)
-    self.view.setPage(EnhancedPage())
-    for f in self.view.actions():
-      print f
+    self.html_view = QWebView(self)
+    self.html_view.setPage(EnhancedPage())
 
     self.setupInspector()
 
@@ -29,17 +27,17 @@ class EnhancedBrowser(QWidget):
     layout.setMargin(0)
     layout.addWidget(self.splitter)
 
-    self.splitter.addWidget(self.view)
+    self.splitter.addWidget(self.html_view)
     self.splitter.addWidget(self.webInspector)
 
   def load(self, page):
-    self.view.load(page)
+    self.html_view.load(page)
 
   def setJsObject(self, name, obj):
-    self.view.page().mainFrame().addToJavaScriptWindowObject(name, obj)
+    self.html_view.page().mainFrame().addToJavaScriptWindowObject(name, obj)
 
   def setupInspector(self):
-    page = self.view.page()
+    page = self.html_view.page()
     page.settings().setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
     self.webInspector = QWebInspector(self)
     self.webInspector.setPage(page)

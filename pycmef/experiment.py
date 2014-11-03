@@ -13,25 +13,39 @@ import sys
 
 from pycmef.utils.loader import ExperimentLoader
 from pycmef.utils.browser import EnhancedBrowser
+
 from pycmef.mixins.experiment_js import ExperimentJSMixin
+from pycmef.mixins.event_manager import EventManagerMixin
+from pycmef.mixins.section_manager import SectionManagerMixin
+from pycmef.mixins.runner import RunnerMixin
+
+from pycmef.event_handler import EventHandler
 
 """
   Handles the experiment setup based on input in the configuration.
 """
-class Experiment(ExperimentJSMixin):
+class Experiment(
+  ExperimentJSMixin,
+  EventManagerMixin,
+  SectionManagerMixin,
+  EventHandler,
+  RunnerMixin):
+
   # Create init files for 
   def __init__(self, file):
     super(Experiment, self).__init__()
-
     self.file = file
     ExperimentLoader(self)
+
+    self.register_runner_events()
 
   def run(self):
     self.app = QApplication(sys.argv)
 
     self.web = EnhancedBrowser()
+    self.register_connectors()
+
     self.web.load(QUrl("./test.html"))
-    self.register_connectors(self.web)
 
     if self.fullscreen:
       self.web.showMaximized()
