@@ -14,7 +14,6 @@ class RunnerMixin:
 
   @returns_dictionary
   def show_event(self, args):
-    print "Show: %s" % args
     return {}
 
   @returns_string

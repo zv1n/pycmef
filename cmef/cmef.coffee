@@ -1,14 +1,21 @@
 class CMEF
   constructor: ->
+    @events = {}
+    @event_count = 0
+
+  initialize_experiment: ->
     console.log("Initializing...")
 
-    @events = {}
-
     _experiment.on_event_response.connect (event, response) =>
-      console.log("Recieved event: #{event} -> #{response}")
+      console.log("Recieved event(#{@event_count}): #{event} -> #{response}")
+      @event_count++
       @handle_event_response(event, response)
 
     @initialized = true
+    @handle_event_response('ready', {})
+
+  ready: (cb) ->
+    @add_event_callback('ready', cb)
 
   experiment: ->
     JSON.parse _experiment.experiment
@@ -42,31 +49,37 @@ class CMEF
     _experiment.emit(event, args)
     return
 
+window.cmef = new CMEF()
+
 # Callback triggered when the Python ThinClient is ready.
 window.on_python_ready = ->
   load_jquery = (callback) ->
     
-    # Adding the script tag to the head as suggested before
-    head = document.getElementsByTagName("head")[0]
-    script = document.createElement("script")
-    script.type = "text/javascript"
-    script.src = "cmef/jquery.js"
-    
-    # Then bind the event to the callback function.
-    # There are several events for cross browser compatibility.
-    script.onreadystatechange = callback
-    script.onload = callback
-    
-    # Fire the loading
-    head.appendChild script
-    return
+    unless window.jQuery
+      console.log('Force loading JQuery...')
+
+      # Adding the script tag to the head as suggested before
+      head = document.getElementsByTagName("head")[0]
+      script = document.createElement("script")
+      script.type = "text/javascript"
+      script.src = "jquery.js"
+      
+      # Then bind the event to the callback function.
+      # There are several events for cross browser compatibility.
+      script.onreadystatechange = callback
+      script.onload = callback
+      
+      # Fire the loading
+      head.appendChild script
+      return
+    else
+      callback()
 
   instantiate_cmef = ->
-    return if window.cmef
-    window.cmef = new CMEF()
+    cmef.initialize_experiment()
 
     cmef.emit "show", (response) ->
-      $(".hidden-until-load").show()
+      $(".show-on-load").show()
 
   load_jquery(instantiate_cmef)
 

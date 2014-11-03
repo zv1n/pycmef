@@ -1,0 +1,14 @@
+
+/* CMEF css */
+
+.show-on-load, .show-on-valid, .show-on-failure {
+  display: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-middle {
+  margin-top: 30%;
+}

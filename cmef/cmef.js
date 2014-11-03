@@ -4,16 +4,26 @@
 
   CMEF = (function() {
     function CMEF() {
+      this.events = {};
+      this.event_count = 0;
+    }
+
+    CMEF.prototype.initialize_experiment = function() {
       var _this = this;
 
       console.log("Initializing...");
-      this.events = {};
       _experiment.on_event_response.connect(function(event, response) {
-        console.log("Recieved event: " + event + " -> " + response);
+        console.log("Recieved event(" + _this.event_count + "): " + event + " -> " + response);
+        _this.event_count++;
         return _this.handle_event_response(event, response);
       });
       this.initialized = true;
-    }
+      return this.handle_event_response('ready', {});
+    };
+
+    CMEF.prototype.ready = function(cb) {
+      return this.add_event_callback('ready', cb);
+    };
 
     CMEF.prototype.experiment = function() {
       return JSON.parse(_experiment.experiment);
@@ -64,27 +74,31 @@
 
   })();
 
+  window.cmef = new CMEF();
+
   window.on_python_ready = function() {
     var instantiate_cmef, load_jquery;
 
     load_jquery = function(callback) {
       var head, script;
 
-      head = document.getElementsByTagName("head")[0];
-      script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = "cmef/jquery.js";
-      script.onreadystatechange = callback;
-      script.onload = callback;
-      head.appendChild(script);
+      if (!window.jQuery) {
+        console.log('Force loading JQuery...');
+        head = document.getElementsByTagName("head")[0];
+        script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "jquery.js";
+        script.onreadystatechange = callback;
+        script.onload = callback;
+        head.appendChild(script);
+      } else {
+        return callback();
+      }
     };
     instantiate_cmef = function() {
-      if (window.cmef) {
-        return;
-      }
-      window.cmef = new CMEF();
+      cmef.initialize_experiment();
       return cmef.emit("show", function(response) {
-        return $(".hidden-until-load").show();
+        return $(".show-on-load").show();
       });
     };
     return load_jquery(instantiate_cmef);

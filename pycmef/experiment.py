@@ -45,7 +45,7 @@ class Experiment(
     self.web = EnhancedBrowser()
     self.register_connectors()
 
-    self.web.load(QUrl("./test.html"))
+    self.web.load(QUrl("./cmef/selftest.html"))
 
     if self.fullscreen:
       self.web.showMaximized()
