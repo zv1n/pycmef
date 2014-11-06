@@ -36,7 +36,6 @@
     CMEF.prototype.default_methods = function() {
       var _this = this;
       return $('#next[data-default=true]').click(function(event) {
-        console.log('Next');
         _this.mark('next');
         return _this.emit('next', _this.collect_response());
       });

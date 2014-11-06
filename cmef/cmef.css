@@ -33,19 +33,26 @@ footer .pure-button {
 }
 
 p#participant {
-  margin-bottom: 50px;   
+  margin-bottom: 50px;
 }
 
 .show-on-valid, .show-on-failure {
   display: none;
 }
 
-.text-center {
+body.text-center, td.text-center {
   text-align: center;
 }
 
-.text-middle {
-  margin-top: 20%;
+body.text-middle, td.text-middle {
+  padding-top: 20%;
+}
+
+div.scroll-pane {
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
 }
 
 .form-control {
@@ -55,6 +62,10 @@ p#participant {
 table {
   width: 100%;
   height: 100%;
+}
+
+table.pure-table {
+  border: 0;
 }
 
 .pure-button {

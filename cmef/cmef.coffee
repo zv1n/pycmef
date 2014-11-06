@@ -31,7 +31,6 @@ class CMEF
 
   default_methods: ->
     $('#next[data-default=true]').click (event) =>
-      console.log('Next')
       @mark('next')
       @emit('next', @collect_response())
 

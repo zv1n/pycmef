@@ -33,6 +33,10 @@ class ExperimentJSMixin(QObject):
   def dataset_json(self):  
     return self.data_dict.to_json()
 
+  # Just this subsection data.
+  def data_json(self):
+    return self.current_subsection.data_to_json()
+
   # Current data field
   def subsection_json(self):  
     return self.current_subsection.to_json()

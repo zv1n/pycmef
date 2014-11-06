@@ -30,8 +30,8 @@ class Experiment(
   EventManagerMixin,
   SectionManagerMixin,
   DataManagerMixin,
-  EventHandler,
-  RunnerMixin):
+  RunnerMixin,
+  EventHandler):
 
   # Create init files for 
   def __init__(self, file):

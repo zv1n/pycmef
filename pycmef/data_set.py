@@ -54,6 +54,11 @@ class DataSet:
 
     return result
 
+  def get_set(self, dset):
+    if dset is None:
+      return []
+    return self.processed.get(dset, [])
+
   def to_json(self, key = None):
     if key is None:
       return json.dumps(self.processed)

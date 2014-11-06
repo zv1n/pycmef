@@ -7,6 +7,7 @@ from pycmef.subsection import Subsection
 class Section:
   def __init__(self, section, parent):
     self.parent = parent
+    self.data = parent.data_dict
 
     if not isinstance(section, dict):
       raise Exception("Section must be an Dictionary!")

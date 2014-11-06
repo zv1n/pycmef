@@ -2,7 +2,9 @@
 
 import sys, json, os
 
-class Subsection: 
+from pycmef.mixins.data_iteration import DataIterationMixin
+
+class Subsection(DataIterationMixin): 
   def __init__(self, sub, parent):
     self.parent = parent
 
@@ -15,6 +17,8 @@ class Subsection:
       self.name = self.sub_data['name']
     except:
       raise Exception("All subsections in %s must contain a name!" % parent.name)
+
+    self.configure_iterations()
 
   def path(self, relative = '.'):
     html = '/'.join([relative, self.parent.name, self.name])
