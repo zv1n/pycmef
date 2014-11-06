@@ -4,12 +4,17 @@ import sys
 import glob
 import os
 
+from subprocess import call
+
 from pycmef.experiment import Experiment
 from pycmef.event_handler import *
 
 def usage():
   print('usage: cmef.py <experiment json or yml or directory>')
   sys.exit(1)
+
+def copy_dependencies(directory):
+  call(['cp', '-r', './cmef', directory])
 
 def main():
   if (len(sys.argv) != 2):
@@ -29,13 +34,15 @@ def main():
   else:
     config = experiment
 
+  copy_dependencies(os.path.dirname(config))
+
   result = Experiment(config).run()
   sys.exit(result)
 
 if __name__ == '__main__':
-  try:
-    main()
-  except Exception as e:
-    print str(e)
-    usage()
-    sys.exit(1)
+  # try:
+  main()
+  # except Exception as e:
+  #   print str(e)
+  #   usage()
+  #   sys.exit(1)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, json
+import sys, json, os
 
 class Subsection: 
   def __init__(self, sub, parent):
@@ -16,8 +16,16 @@ class Subsection:
     except:
       raise Exception("All subsections in %s must contain a name!" % parent.name)
 
+  def path(self, relative = '.'):
+    html = '/'.join([relative, self.parent.name, self.name])
+    if os.path.exists(html + '.html'):
+      return html + '.html'
+    if os.path.exists(html + '.htm'):
+      return html + '.htm'
+    return u'./cmef/end.html'
+
   def to_json(self):
-    return json.dumps(self.section_data)
+    return json.dumps(self.sub_data)
 
 if __name__ == "__main__":
   import sys

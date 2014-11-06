@@ -19,6 +19,8 @@ class ExperimentLoader:
     self.exp.data = self.exp_data
     self.exp.name = self.exp_data.get('experiment', 'Unnamed')
     self.exp.fullscreen = self.exp_data.get('fullscreen', False)
+
+    self.exp.process_data_set()
     self.exp.process_sections()
 
   # Helpers to load the experiment File

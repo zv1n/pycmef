@@ -7,9 +7,14 @@ class SelfText
       @fail()
 
     @validated()
+    @gtg = true
 
   validated: ->
     $(".show-on-valid").show()
+    $("#begin").click (event) ->
+      return unless $('#pid').val() > 0
+      cmef.emit 'start', (response) ->
+        # console.log("selftest.js - Next: #{response}")
 
   fail: ->
     $(".show-on-failure").show()

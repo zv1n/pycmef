@@ -13,8 +13,8 @@ class ExperimentJSMixin(QObject):
 
   @pyqtSlot(str, str)
   def emit(self, qevent, qargs):
-    event = str(qevent)
-    args = str(qargs)
+    event = unicode(qevent)
+    args = unicode(qargs)
 
     if len(args) > 1:
       try:
@@ -31,26 +31,17 @@ class ExperimentJSMixin(QObject):
 
   # Entire dataset (post-processed).
   def dataset_json(self):  
-    return self.dataset.to_json()
+    return self.data_dict.to_json()
 
   # Current data field
   def subsection_json(self):  
-    return self.subsection.to_json()
-
-  # Response data field
-  def response_json(self):  
-    return self.response.to_json()
-
-  # Current data field
-  def set_response(self, response):  
-    self.response = JSON.parse(response)
+    return self.current_subsection.to_json()
 
   on_event_response = pyqtSignal(str, str)
 
   experiment = pyqtProperty(str, fget=experiment_json)
   dataset = pyqtProperty(str, fget=dataset_json)
-  current = pyqtProperty(str, fget=subsection_json)
-  response = pyqtProperty(str, fset=set_response, fget=response_json)
+  subsection = pyqtProperty(str, fget=subsection_json)
 
   def register_connectors(self):
     self.html_view().loadFinished.connect(self.on_load)

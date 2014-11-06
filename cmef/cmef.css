@@ -1,7 +1,42 @@
 
 /* CMEF css */
 
-.show-on-load, .show-on-valid, .show-on-failure {
+.show-on-load {
+  display: none;
+}
+
+body {
+  /*padding: 20px;*/
+}
+
+footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 50px;
+  width: 100%;
+}
+
+.cmef-buttons {
+  font-size: 14px;
+}
+
+footer.cmef-buttons {
+  border-top: 1px solid grey;
+  text-align: right;
+
+  background-color: #faf7f3;
+}
+
+footer .pure-button {
+  margin: 10px;
+}
+
+p#participant {
+  margin-bottom: 50px;   
+}
+
+.show-on-valid, .show-on-failure {
   display: none;
 }
 
@@ -10,5 +45,29 @@
 }
 
 .text-middle {
-  margin-top: 30%;
+  margin-top: 20%;
+}
+
+.form-control {
+  display: block;
+}
+
+table {
+  width: 100%;
+  height: 100%;
+}
+
+.pure-button {
+  border: 1px solid lightgrey;
+}
+
+input[type=button] {
+  cursor: pointer;
+  border: 1px solid lightgrey;
+}
+
+input[type=text], input[type=number] {
+  line-height: 1.5em;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
 }

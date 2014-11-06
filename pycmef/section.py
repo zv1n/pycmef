@@ -20,6 +20,9 @@ class Section:
 
     self.process_subsections()
 
+  def print_section(self):
+    print "Subsection: %s" % ', '.join([sub.name for sub in self.subsections])
+
   def process_subsections(self):
     try:
       subsections = self.section_data['subsections']
@@ -27,6 +30,22 @@ class Section:
       raise Exception('Every section must contain at least 1 subsection.')
 
     self.subsections = [Subsection(sub, self) for sub in subsections]
+
+    self.current_subsection_index = 0
+    self.update_current_subsection()
+
+  def update_current_subsection(self):
+    self.current_subsection = self.subsections[self.current_subsection_index]
+    if self.current_subsection is None:
+      print "Current Sub: %s" % self.current_subsection.name
+
+  def next_subsection(self):
+    self.current_subsection_index += 1
+    try:
+      self.current_subsection = self.subsections[self.current_subsection_index]
+      return self.current_subsection
+    except IndexError:
+      return None
 
   def to_json(self):
     return json.dumps(self.section_data)

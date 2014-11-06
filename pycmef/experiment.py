@@ -9,7 +9,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
 
-import sys
+import sys, os
 
 from pycmef.utils.loader import ExperimentLoader
 from pycmef.utils.browser import EnhancedBrowser
@@ -17,6 +17,7 @@ from pycmef.utils.browser import EnhancedBrowser
 from pycmef.mixins.experiment_js import ExperimentJSMixin
 from pycmef.mixins.event_manager import EventManagerMixin
 from pycmef.mixins.section_manager import SectionManagerMixin
+from pycmef.mixins.data_manager import DataManagerMixin
 from pycmef.mixins.runner import RunnerMixin
 
 from pycmef.event_handler import EventHandler
@@ -28,6 +29,7 @@ class Experiment(
   ExperimentJSMixin,
   EventManagerMixin,
   SectionManagerMixin,
+  DataManagerMixin,
   EventHandler,
   RunnerMixin):
 
@@ -35,9 +37,18 @@ class Experiment(
   def __init__(self, file):
     super(Experiment, self).__init__()
     self.file = file
+    self.directory = os.path.dirname(file)
+
     ExperimentLoader(self)
 
+    # self.print_sections()
+    # self.print_data()
+
     self.register_runner_events()
+
+  def load_page(self, page):
+    print "Loading page: %s" % page
+    self.web.load(QUrl(QString(page)))
 
   def run(self):
     self.app = QApplication(sys.argv)

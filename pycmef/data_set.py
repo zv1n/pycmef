@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
-import sys
-
-import json
+import sys, json
 from yaml import safe_load
 
 class DataSet:
-  def __init__(self, dict):
-    self.data = dict
+  def __init__(self, data):
+    self.data = data
     self.process()
 
   def print_stats(self):
