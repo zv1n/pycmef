@@ -21,10 +21,15 @@ class Subsection(DataIterationMixin):
     self.configure_iterations()
 
   def path(self, relative = '.'):
+    abs_html = '/'.join([self.parent.name, self.name])
     html = '/'.join([relative, self.parent.name, self.name])
     if os.path.exists(html + '.html'):
       return html + '.html'
     if os.path.exists(html + '.htm'):
+      return html + '.htm'
+    if os.path.exists(abs_html + '.html'):
+      return html + '.html'
+    if os.path.exists(abs_html + '.htm'):
       return html + '.htm'
     return u'./cmef/end.html'
 

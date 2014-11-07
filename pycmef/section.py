@@ -41,12 +41,15 @@ class Section:
       print "Current Sub: %s" % self.current_subsection.name
 
   def next_subsection(self):
-    self.current_subsection_index += 1
-    try:
-      self.current_subsection = self.subsections[self.current_subsection_index]
-      return self.current_subsection
-    except IndexError:
-      return None
+    if self.current_subsection.should_repeat():
+      self.current_subsection.next()
+    else:
+      self.current_subsection_index += 1
+      try:
+        self.current_subsection = self.subsections[self.current_subsection_index]
+        return self.current_subsection
+      except IndexError:
+        return None
 
   def to_json(self):
     return json.dumps(self.section_data)
