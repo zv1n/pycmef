@@ -5,6 +5,7 @@ import sys, json, os
 from pycmef.iterators import *
 
 class DataIterationMixin:
+  iteration = 0
   def configure_iterations(self):
     self.iter_count = self.sub_data.get('iterations', 1)
     self.set_count = self.sub_data.get('sets', 1)
@@ -24,13 +25,16 @@ class DataIterationMixin:
     self.iteration += 1
     try:
       self.load_data()
-      return true
+      return True
     except KeyError, IndexError:
-      return false
+      return False
 
   def load_data(self):
     if self.set_count == 1:
-      self.current_data = self.selected_data[self.iterator.next()]
+      try:
+        self.current_data = self.selected_data[self.iterator.next()]
+      except IndexError as e:
+        print e
     else:
       indexes = [self.iterator.next() for i in range(self.set_count)]
       self.current_data = [self.selected_data[idx] for idx in indexes]
