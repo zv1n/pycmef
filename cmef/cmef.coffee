@@ -1,4 +1,6 @@
 class CMEF
+  @$NO_EVENT_HANDLER: '$ERROR:no_event_handler'
+
   constructor: ->
     @events = {}
     @event_count = 0
@@ -32,21 +34,46 @@ class CMEF
 
     @auto_template()
     @auto_enable()
+    @auto_eyetracker()
+    @auto_input()
+
+    return
 
   load_data: ->
-    @current = JSON.parse(_experiment.current)
-    @data = JSON.parse(_experiment.dataset)
+    @current = JSON.parse(_experiment.current || '{}')
+    @data = JSON.parse(_experiment.dataset || '{}')
     @subsection = JSON.parse(_experiment.subsection)
     @experiment = JSON.parse(_experiment.experiment)
 
+    return
+
   mark: (name) ->
-    @times[name] = new Date()
+    @times[name] = (new Date()).getTime()
 
   default_methods: ->
-    console.log $('input').length
     $('#next[data-default="true"]').click (event) =>
-      @mark('next')
-      @emit('next', @collect_response())
+      @mark('submit')
+      @submit(@collect_response())
+
+    return
+
+  submit: (content) ->
+    for cb in @on_next
+      cb()
+
+    @emit('next', content)
+
+  auto_input: ->
+    for target in $('[data-input]')
+      @input_selectors($(target).data('input').split(','))
+
+  auto_eyetracker: ->
+    if $('body').data('eyetracker')
+      @emit('screen_capture')
+      @emit('start_eyetracker')
+      @before_submit => @emit('stop_eyetracker')
+
+    return
 
   auto_populate: (type, modifier) ->
     for target in $("[data-#{type}]")
@@ -74,6 +101,8 @@ class CMEF
 
       $(target.parentNode).append rendered
 
+    return
+
   auto_enable: ->
     for target in $("[data-enable-on]")
       $target = $(target)
@@ -83,22 +112,44 @@ class CMEF
       $(selector).data('enable-target', target).change ->
         $target.removeClass('pure-button-disabled')
 
+    return
 
-  input_selectors: (@input_selectors) ->
+  input_selectors: (sels) ->
+    @iselectors ||= []
+
+    unless sels instanceof Array
+      sels = [sels]
+
+    for f in sels
+      @iselectors.push f
 
   collect_response: ->
     res = {}
     res.times = @times
-    res.data = @data
+    res.data = @current
 
-    for sel in @input_selectors
+    for sel in @iselectors
       $target = $(sel)
       res[$target.attr('name')] = $target.val()
+
+    try
+      cor = res.data.question.correct.toString() == res.answer.toString()
+      console.log cor
+      res.correct = cor
+    catch
+      #console.log("non-standard answer format.")
 
     return res
 
   ready: (cb) ->
     @add_event_callback('ready', cb)
+
+  before_submit: (cb) ->
+    @on_next ||= []
+    @on_next.push cb
+
+  experiment: ->
+    JSON.parse _experiment.experiment
 
   handle_event_response: (event, response) ->
     cbs = @events[event] if @events.hasOwnProperty(event)

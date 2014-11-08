@@ -3,6 +3,8 @@
   var CMEF;
 
   CMEF = (function() {
+    CMEF.$NO_EVENT_HANDLER = '$ERROR:no_event_handler';
+
     function CMEF() {
       this.events = {};
       this.event_count = 0;
@@ -31,28 +33,64 @@
         return target.html(value);
       });
       this.auto_template();
-      return this.auto_enable();
+      this.auto_enable();
+      this.auto_eyetracker();
+      this.auto_input();
     };
 
     CMEF.prototype.load_data = function() {
       this.current = JSON.parse(_experiment.current);
       this.data = JSON.parse(_experiment.dataset);
       this.subsection = JSON.parse(_experiment.subsection);
-      return this.experiment = JSON.parse(_experiment.experiment);
+      this.experiment = JSON.parse(_experiment.experiment);
     };
 
     CMEF.prototype.mark = function(name) {
-      return this.times[name] = new Date();
+      return this.times[name] = (new Date()).getTime();
     };
 
     CMEF.prototype.default_methods = function() {
       var _this = this;
 
-      console.log($('input').length);
-      return $('#next[data-default="true"]').click(function(event) {
-        _this.mark('next');
-        return _this.emit('next', _this.collect_response());
+      $('#next[data-default="true"]').click(function(event) {
+        _this.mark('submit');
+        return _this.submit(_this.collect_response());
       });
+    };
+
+    CMEF.prototype.submit = function(content) {
+      var cb, _i, _len, _ref;
+
+      _ref = this.on_next;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        cb = _ref[_i];
+        cb();
+      }
+      return this.emit('next', content);
+    };
+
+    CMEF.prototype.auto_input = function() {
+      var target, _i, _len, _ref, _results;
+
+      _ref = $('[data-input]');
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        target = _ref[_i];
+        _results.push(this.input_selectors($(target).data('input').split(',')));
+      }
+      return _results;
+    };
+
+    CMEF.prototype.auto_eyetracker = function() {
+      var _this = this;
+
+      if ($('body').data('eyetracker')) {
+        this.emit('screen_capture');
+        this.emit('start_eyetracker');
+        this.before_submit(function() {
+          return _this.emit('stop_eyetracker');
+        });
+      }
     };
 
     CMEF.prototype.auto_populate = function(type, modifier) {
@@ -75,59 +113,78 @@
     };
 
     CMEF.prototype.auto_template = function() {
-      var $target, rendered, target, _i, _len, _ref, _results;
+      var $target, rendered, target, _i, _len, _ref;
 
       _ref = $("[type='text/x-handlebars-template']");
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
         $target = $(target);
         rendered = $(Handlebars.compile($target.html())({
           data: this.current
         }));
-        _results.push($(target.parentNode).append(rendered));
+        $(target.parentNode).append(rendered);
       }
-      return _results;
     };
 
     CMEF.prototype.auto_enable = function() {
-      var $target, selector, target, _i, _len, _ref, _results;
+      var $target, selector, target, _i, _len, _ref;
 
       _ref = $("[data-enable-on]");
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
         $target = $(target);
         $target.addClass('pure-button-disabled');
         selector = $target.data('enable-on');
-        _results.push($(selector).data('enable-target', target).change(function() {
+        $(selector).data('enable-target', target).change(function() {
           return $target.removeClass('pure-button-disabled');
-        }));
+        });
+      }
+    };
+
+    CMEF.prototype.input_selectors = function(sels) {
+      var f, _i, _len, _results;
+
+      this.iselectors || (this.iselectors = []);
+      if (!(sels instanceof Array)) {
+        sels = [sels];
+      }
+      _results = [];
+      for (_i = 0, _len = sels.length; _i < _len; _i++) {
+        f = sels[_i];
+        _results.push(this.iselectors.push(f));
       }
       return _results;
     };
 
-    CMEF.prototype.input_selectors = function(input_selectors) {
-      this.input_selectors = input_selectors;
-    };
-
     CMEF.prototype.collect_response = function() {
-      var $target, res, sel, _i, _len, _ref;
+      var $target, cor, res, sel, _i, _len, _ref;
 
       res = {};
       res.times = this.times;
-      res.data = this.data;
-      _ref = this.input_selectors;
+      res.data = this.current;
+      _ref = this.iselectors;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         sel = _ref[_i];
         $target = $(sel);
         res[$target.attr('name')] = $target.val();
       }
+      cor = res.data.question.correct.toString() === res.answer.toString();
+      console.log(cor);
+      res.correct = cor;
       return res;
     };
 
     CMEF.prototype.ready = function(cb) {
       return this.add_event_callback('ready', cb);
+    };
+
+    CMEF.prototype.before_submit = function(cb) {
+      this.on_next || (this.on_next = []);
+      return this.on_next.push(cb);
+    };
+
+    CMEF.prototype.experiment = function() {
+      return JSON.parse(_experiment.experiment);
     };
 
     CMEF.prototype.handle_event_response = function(event, response) {

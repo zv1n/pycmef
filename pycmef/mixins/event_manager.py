@@ -21,13 +21,13 @@ class EventManagerMixin(object):
     return self.__event_handlers__.get(event, None)
 
   def handle_event(self, event, args):
-    event = self.get_event_handler(event)
+    event_handler = self.get_event_handler(event)
 
-    if event is None:
-      print 'No handler registered.'
+    if event_handler is None:
+      print "No handler for %s registered." % event
       return '$ERROR:no_event_handler'
 
-    return event(args)
+    return event_handler(args)
 
   def register_event(self, event, method):
     self.configure()

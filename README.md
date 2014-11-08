@@ -132,5 +132,5 @@ Set the `data-attribute` to the data attribute you want set.  Set the `data-valu
 ></span>
 ```
 
-Add `data-content` and add a `data-value` containg the Handlebars-compliant value to the HTML element.  The `innerHTML` of the element will be replaced by the content of the Handlebars element.
+Add `data-content` and add a `data-value` containing the Handlebars-compliant value to the HTML element.  The `innerHTML` of the element will be replaced by the content of the Handlebars element.
 

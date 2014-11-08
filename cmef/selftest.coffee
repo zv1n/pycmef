@@ -12,9 +12,13 @@ class SelfText
   validated: ->
     $(".show-on-valid").show()
     $("#begin").click (event) ->
-      return unless $('#pid').val() > 0
-      cmef.emit 'start', (response) ->
-        # console.log("selftest.js - Next: #{response}")
+      participant = $('#pid').val()
+      condition = $('#condition').val()
+      return unless participant > 0
+      cmef.emit 'start', {
+        participant: participant,
+        condition: condition
+      }
 
   fail: ->
     $(".show-on-failure").show()

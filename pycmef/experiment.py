@@ -19,6 +19,7 @@ from pycmef.mixins.event_manager import EventManagerMixin
 from pycmef.mixins.section_manager import SectionManagerMixin
 from pycmef.mixins.data_manager import DataManagerMixin
 from pycmef.mixins.runner import RunnerMixin
+from pycmef.mixins.response import ResponseMixin
 
 from pycmef.event_handler import EventHandler
 
@@ -33,6 +34,7 @@ class Experiment(
   EventManagerMixin,
   SectionManagerMixin,
   DataManagerMixin,
+  ResponseMixin,
   RunnerMixin,
   EventHandler):
 
@@ -45,6 +47,7 @@ class Experiment(
     ExperimentLoader(self)
 
     self.register_runner_events()
+    self.init_response()
 
     # Try to instantiate PygazeEyetracker if the class exists.
     # Ignore the error if it doesn't.
