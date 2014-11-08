@@ -21,7 +21,20 @@ class CMEF
 
     @default_methods()
 
+    @auto_populate('attribute', (target, value) ->
+      attr = target.data('attribute')
+      target.attr(attr, value)
+    )
+
+    @auto_populate('content', (target, value) ->
+      target.html(value)
+    )
+
+    @auto_template()
+    @auto_enable()
+
   load_data: ->
+    @current = JSON.parse(_experiment.current)
     @data = JSON.parse(_experiment.dataset)
     @subsection = JSON.parse(_experiment.subsection)
     @experiment = JSON.parse(_experiment.experiment)
@@ -30,9 +43,46 @@ class CMEF
     @times[name] = new Date()
 
   default_methods: ->
-    $('#next[data-default=true]').click (event) =>
+    console.log $('input').length
+    $('#next[data-default="true"]').click (event) =>
       @mark('next')
       @emit('next', @collect_response())
+
+  auto_populate: (type, modifier) ->
+    for target in $("[data-#{type}]")
+      target = $(target)
+      value = target.data('value')
+      render = target.data('render')
+
+      if (!render)
+        render = Handlebars.compile(value)
+        target.data('render', render)
+
+      modifier(target, render({
+        data: @current
+      }))
+
+    return
+
+  auto_template: ->
+    for target in $("[type='text/x-handlebars-template']")
+      $target = $(target)
+
+      rendered = $(Handlebars.compile($target.html())({
+        data: @current
+      }))
+
+      $(target.parentNode).append rendered
+
+  auto_enable: ->
+    for target in $("[data-enable-on]")
+      $target = $(target)
+      $target.addClass('pure-button-disabled')
+      selector = $target.data('enable-on')
+
+      $(selector).data('enable-target', target).change ->
+        $target.removeClass('pure-button-disabled')
+
 
   input_selectors: (@input_selectors) ->
 
@@ -49,9 +99,6 @@ class CMEF
 
   ready: (cb) ->
     @add_event_callback('ready', cb)
-
-  experiment: ->
-    JSON.parse _experiment.experiment
 
   handle_event_response: (event, response) ->
     cbs = @events[event] if @events.hasOwnProperty(event)
@@ -86,27 +133,23 @@ window.cmef = new CMEF()
 
 # Callback triggered when the Python ThinClient is ready.
 window.on_python_ready = ->
-  load_jquery = (callback) ->
-    
-    unless window.jQuery
-      #console.log('Force loading JQuery...')
+  load_js = (path, callback) ->
+    #console.log('Force loading JQuery...')
 
-      # Adding the script tag to the head as suggested before
-      head = document.getElementsByTagName("head")[0]
-      script = document.createElement("script")
-      script.type = "text/javascript"
-      script.src = "../cmef/jquery.js"
-      
-      # Then bind the event to the callback function.
-      # There are several events for cross browser compatibility.
-      script.onreadystatechange = callback
-      script.onload = callback
-      
-      # Fire the loading
-      head.appendChild script
-      return
-    else
-      callback()
+    # Adding the script tag to the head as suggested before
+    head = document.getElementsByTagName("head")[0]
+    script = document.createElement("script")
+    script.type = "text/javascript"
+    script.src = path
+    
+    # Then bind the event to the callback function.
+    # There are several events for cross browser compatibility.
+    script.onreadystatechange = callback
+    script.onload = callback
+    
+    # Fire the loading
+    head.appendChild script
+    return
 
   instantiate_cmef = ->
     cmef.initialize_experiment()
@@ -115,7 +158,9 @@ window.on_python_ready = ->
       cmef.mark('show')
       $(".show-on-load").show()
 
-  load_jquery(instantiate_cmef)
+  load_js "../cmef/jquery.js", ->
+    load_js "../cmef/handlebars.js", instantiate_cmef
+
 
 # (->
 #   if navigator.userAgent.search(/Python/i) is -1

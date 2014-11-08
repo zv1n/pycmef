@@ -43,6 +43,7 @@ class Section:
   def next_subsection(self):
     if self.current_subsection.should_repeat():
       self.current_subsection.next()
+      return self.current_subsection
     else:
       self.current_subsection_index += 1
       try:

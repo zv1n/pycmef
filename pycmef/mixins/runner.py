@@ -24,8 +24,9 @@ class RunnerMixin:
 
   @returns_string
   def next_event(self, args):
+    print 'next'
     self.next_subsection()
-    print "%s:%s" % (self.current_section.name, self.current_subsection.name)
+    # print "%s:%s" % (self.current_section.name, self.current_subsection.name)
     self.load_page(self.current_subsection.path(self.directory))
     return 'success'
 

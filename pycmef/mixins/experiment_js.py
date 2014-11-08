@@ -46,6 +46,7 @@ class ExperimentJSMixin(QObject):
   experiment = pyqtProperty(str, fget=experiment_json)
   dataset = pyqtProperty(str, fget=dataset_json)
   subsection = pyqtProperty(str, fget=subsection_json)
+  current = pyqtProperty(str, fget=data_json)
 
   def register_connectors(self):
     self.html_view().loadFinished.connect(self.on_load)
