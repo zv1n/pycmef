@@ -3,12 +3,12 @@
   var CMEF;
 
   CMEF = (function() {
-    CMEF.$NO_EVENT_HANDLER = '$ERROR:no_event_handler';
-
     function CMEF() {
       this.events = {};
       this.event_count = 0;
       this.times = {};
+      this.iselectors = [];
+      this.on_next = [];
       this.mark('load');
     }
 
@@ -39,8 +39,8 @@
     };
 
     CMEF.prototype.load_data = function() {
-      this.current = JSON.parse(_experiment.current);
-      this.data = JSON.parse(_experiment.dataset);
+      this.current = JSON.parse(_experiment.current || '{}');
+      this.data = JSON.parse(_experiment.dataset || '{}');
       this.subsection = JSON.parse(_experiment.subsection);
       this.experiment = JSON.parse(_experiment.experiment);
     };
@@ -70,15 +70,13 @@
     };
 
     CMEF.prototype.auto_input = function() {
-      var target, _i, _len, _ref, _results;
+      var target, _i, _len, _ref;
 
       _ref = $('[data-input]');
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
-        _results.push(this.input_selectors($(target).data('input').split(',')));
+        this.input_selectors($(target).data('input').split(','));
       }
-      return _results;
     };
 
     CMEF.prototype.auto_eyetracker = function() {
@@ -142,22 +140,19 @@
     };
 
     CMEF.prototype.input_selectors = function(sels) {
-      var f, _i, _len, _results;
+      var f, _i, _len;
 
-      this.iselectors || (this.iselectors = []);
       if (!(sels instanceof Array)) {
         sels = [sels];
       }
-      _results = [];
       for (_i = 0, _len = sels.length; _i < _len; _i++) {
         f = sels[_i];
-        _results.push(this.iselectors.push(f));
+        this.iselectors.push(f);
       }
-      return _results;
     };
 
     CMEF.prototype.collect_response = function() {
-      var $target, cor, res, sel, _i, _len, _ref;
+      var $target, cor, e, res, sel, _i, _len, _ref;
 
       res = {};
       res.times = this.times;
@@ -168,9 +163,12 @@
         $target = $(sel);
         res[$target.attr('name')] = $target.val();
       }
-      cor = res.data.question.correct.toString() === res.answer.toString();
-      console.log(cor);
-      res.correct = cor;
+      try {
+        cor = res.data.question.correct.toString() === res.answer.toString();
+        res.correct = cor;
+      } catch (_error) {
+        e = _error;
+      }
       return res;
     };
 

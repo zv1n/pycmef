@@ -1,10 +1,11 @@
-class CMEF
-  @$NO_EVENT_HANDLER: '$ERROR:no_event_handler'
 
+class CMEF
   constructor: ->
     @events = {}
     @event_count = 0
     @times = {}
+    @iselectors = []
+    @on_next = []
 
     @mark('load')
 
@@ -67,6 +68,8 @@ class CMEF
     for target in $('[data-input]')
       @input_selectors($(target).data('input').split(','))
 
+    return
+
   auto_eyetracker: ->
     if $('body').data('eyetracker')
       @emit('screen_capture')
@@ -115,13 +118,13 @@ class CMEF
     return
 
   input_selectors: (sels) ->
-    @iselectors ||= []
-
     unless sels instanceof Array
       sels = [sels]
 
     for f in sels
       @iselectors.push f
+
+    return
 
   collect_response: ->
     res = {}
@@ -134,10 +137,9 @@ class CMEF
 
     try
       cor = res.data.question.correct.toString() == res.answer.toString()
-      console.log cor
       res.correct = cor
-    catch
-      #console.log("non-standard answer format.")
+    catch e
+      # res.indeterminate = true
 
     return res
 

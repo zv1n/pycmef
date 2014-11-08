@@ -23,9 +23,6 @@ from pycmef.mixins.response import ResponseMixin
 
 from pycmef.event_handler import EventHandler
 
-if "--pygaze" in sys.argv:
-  from pycmef.pygaze_eyetracker import PygazeEyetracker
-
 """
   Handles the experiment setup based on input in the configuration.
 """
@@ -48,14 +45,6 @@ class Experiment(
 
     self.register_runner_events()
     self.init_response()
-
-    # Try to instantiate PygazeEyetracker if the class exists.
-    # Ignore the error if it doesn't.
-    try:
-      self.eyetracker = PygazeEyetracker()
-      self.eyetracker.register(self)
-    except NameError:
-      pass
 
   def load_page(self, page):
     # print "Loading page: %s" % page

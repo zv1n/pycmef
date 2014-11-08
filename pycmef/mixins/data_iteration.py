@@ -16,7 +16,10 @@ class DataIterationMixin:
     self.select_iterator()
 
   def data_to_json(self):
-    return json.dumps(self.current_data)
+    try:
+      return json.dumps(self.current_data)
+    except AttributeError:
+      return '{}'
 
   def should_repeat(self):
     print "IT: %s CU: %s" % (self.iter_count, self.iteration)

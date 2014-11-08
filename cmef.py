@@ -9,6 +9,10 @@ from subprocess import call
 from pycmef.experiment import Experiment
 from pycmef.event_handler import *
 
+if "--pygaze" in sys.argv:
+  from pycmef.pygaze_eyetracker import PygazeEyetracker
+
+
 def usage():
   print('usage: cmef.py <experiment json or yml or directory>')
   sys.exit(1)
@@ -17,7 +21,7 @@ def copy_dependencies(directory):
   call(['cp', '-r', './cmef', directory])
 
 def main():
-  if (len(sys.argv) != 2):
+  if (len(sys.argv) <= 1):
     usage()
 
   experiment = sys.argv[1]
@@ -36,7 +40,17 @@ def main():
 
   copy_dependencies(os.path.dirname(config))
 
-  result = Experiment(config).run()
+  exp = Experiment(config)
+
+  # Try to instantiate PygazeEyetracker if the class exists.
+  # Ignore the error if it doesn't.
+  try:
+    eyetracker = PygazeEyetracker()
+    eyetracker.register(exp)
+  except NameError:
+    pass
+
+  result = exp.run()
   sys.exit(result)
 
 if __name__ == '__main__':

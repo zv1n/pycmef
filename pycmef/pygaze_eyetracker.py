@@ -14,16 +14,20 @@ class PygazeEyetracker:
 
   @returns_string
   def calibrate_eyetracker(self, args):
+    print "PG Calibrate"
     return ""
 
   @returns_string
   def start_tracking(self, args):
+    print "PG Start"
     return ""
 
   @returns_string
   def stop_tracking(self, args):
+    print "PG Stop"
     return ""
 
   @returns_string
   def log_to_eyetracker(self, args):
+    print "PG Log"
     return ""
