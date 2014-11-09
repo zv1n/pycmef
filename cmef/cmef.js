@@ -20,6 +20,7 @@
         return _this.handle_event_response(event, response);
       });
       this.load_data();
+      this.handlebars();
       this.initialized = true;
       this.handle_event_response('ready', {});
       this.default_methods();
@@ -111,16 +112,17 @@
     };
 
     CMEF.prototype.auto_template = function() {
-      var $target, rendered, target, _i, _len, _ref;
+      var $target, html, rendered, target, _i, _len, _ref;
 
       _ref = $("[type='text/x-handlebars-template']");
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
         $target = $(target);
-        rendered = $(Handlebars.compile($target.html())({
+        html = Handlebars.compile($target.html())({
           data: this.current
-        }));
-        $(target.parentNode).append(rendered);
+        });
+        rendered = $(html);
+        rendered.insertBefore($target);
       }
     };
 
@@ -224,6 +226,42 @@
       args = cb_or_args;
       this.add_event_callback(event, cb);
       _experiment.emit(event, args);
+    };
+
+    CMEF.prototype.handlebars = function() {
+      return Handlebars.registerHelper("each_random", function(context, options) {
+        var key, keys, kidx, length, random, ret, _i, _ref, _results;
+
+        if (!options) {
+          throw new Exception("Must pass iterator to #each_random");
+        }
+        ret = "";
+        if (context instanceof Function) {
+          context = context.call(this);
+        }
+        random = function(min, max) {
+          return Math.floor(Math.random() * (max - min)) + min;
+        };
+        if (context && typeof context === "object") {
+          keys = void 0;
+          if (context instanceof Array) {
+            keys = (function() {
+              _results = [];
+              for (var _i = 0, _ref = context.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; 0 <= _ref ? _i++ : _i--){ _results.push(_i); }
+              return _results;
+            }).apply(this);
+          } else {
+            keys = Object.keys(context);
+          }
+          length = keys.length;
+          while (keys.length > 0) {
+            kidx = random(0, keys.length);
+            key = keys.splice(kidx, 1);
+            ret = ret + options.fn(context[key]);
+          }
+        }
+        return ret;
+      });
     };
 
     return CMEF;

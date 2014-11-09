@@ -57,7 +57,12 @@ class DataSet:
   def get_set(self, dset):
     if dset is None:
       return []
-    return self.processed.get(dset, [])
+
+    try:
+      return self.processed[dset]
+    except KeyError:
+      raise Exception("The requested dataset (%s) does not exist!" % dset)
+
 
   def to_json(self, key = None):
     if key is None:

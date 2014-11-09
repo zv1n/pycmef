@@ -18,6 +18,7 @@ class CMEF
       @handle_event_response(event, response)
 
     @load_data()
+    @handlebars()
 
     @initialized = true
     @handle_event_response('ready', {})
@@ -98,11 +99,12 @@ class CMEF
     for target in $("[type='text/x-handlebars-template']")
       $target = $(target)
 
-      rendered = $(Handlebars.compile($target.html())({
+      html = Handlebars.compile($target.html())({
         data: @current
-      }))
+      })
 
-      $(target.parentNode).append rendered
+      rendered = $(html)
+      rendered.insertBefore($target)
 
     return
 
@@ -181,6 +183,32 @@ class CMEF
     @add_event_callback(event, cb)
     _experiment.emit(event, args)
     return
+
+  handlebars: ->
+    Handlebars.registerHelper "each_random", (context, options) ->
+      throw new Exception("Must pass iterator to #each_random")  unless options
+
+      ret = ""
+      context = context.call(this)  if context instanceof Function
+      random = (min, max) ->
+        return Math.floor(Math.random() * (max - min)) + min
+      
+      if context and typeof context is "object"
+        keys = undefined
+
+        if context instanceof Array
+          keys = [0..context.length-1]
+        else
+          keys = Object.keys(context)
+
+        length = keys.length
+
+        while keys.length > 0
+          kidx = random(0, keys.length)
+          key = keys.splice(kidx, 1)
+          ret = ret + options.fn(context[key])
+
+      ret
 
 window.cmef = new CMEF()
 
