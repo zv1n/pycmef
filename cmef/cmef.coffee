@@ -111,11 +111,11 @@ class CMEF
   auto_enable: ->
     for target in $("[data-enable-on]")
       $target = $(target)
-      $target.addClass('pure-button-disabled')
+      $target.addClass('pure-button-disabled').attr('disabled', true)
       selector = $target.data('enable-on')
 
       $(selector).data('enable-target', target).change ->
-        $target.removeClass('pure-button-disabled')
+        $target.removeClass('pure-button-disabled').attr('disabled', false)
 
     return
 
@@ -136,6 +136,10 @@ class CMEF
     for sel in @iselectors
       $target = $(sel)
       res[$target.attr('name')] = $target.val()
+
+    for sel in $('[data-collect=true]')
+      $target = $(sel)
+      res[$target.attr('name')] = $target.attr('value')
 
     try
       cor = res.data.question.correct.toString() == res.answer.toString()
@@ -190,8 +194,11 @@ class CMEF
 
       ret = ""
       context = context.call(this)  if context instanceof Function
+
       random = (min, max) ->
         return Math.floor(Math.random() * (max - min)) + min
+
+      data = {}
       
       if context and typeof context is "object"
         keys = undefined
@@ -203,10 +210,15 @@ class CMEF
 
         length = keys.length
 
+        i = 0
         while keys.length > 0
           kidx = random(0, keys.length)
           key = keys.splice(kidx, 1)
-          ret = ret + options.fn(context[key])
+          data.index = key
+          data.key = key
+          data.order = i
+          ret = ret + options.fn(context[key], { data: data })
+          i++
 
       ret
 

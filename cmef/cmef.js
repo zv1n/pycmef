@@ -133,10 +133,10 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
         $target = $(target);
-        $target.addClass('pure-button-disabled');
+        $target.addClass('pure-button-disabled').attr('disabled', true);
         selector = $target.data('enable-on');
         $(selector).data('enable-target', target).change(function() {
-          return $target.removeClass('pure-button-disabled');
+          return $target.removeClass('pure-button-disabled').attr('disabled', false);
         });
       }
     };
@@ -154,7 +154,7 @@
     };
 
     CMEF.prototype.collect_response = function() {
-      var $target, cor, e, res, sel, _i, _len, _ref;
+      var $target, cor, e, res, sel, _i, _j, _len, _len1, _ref, _ref1;
 
       res = {};
       res.times = this.times;
@@ -164,6 +164,12 @@
         sel = _ref[_i];
         $target = $(sel);
         res[$target.attr('name')] = $target.val();
+      }
+      _ref1 = $('[data-collect=true]');
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        sel = _ref1[_j];
+        $target = $(sel);
+        res[$target.attr('name')] = $target.attr('value');
       }
       try {
         cor = res.data.question.correct.toString() === res.answer.toString();
@@ -230,7 +236,7 @@
 
     CMEF.prototype.handlebars = function() {
       return Handlebars.registerHelper("each_random", function(context, options) {
-        var key, keys, kidx, length, random, ret, _i, _ref, _results;
+        var data, i, key, keys, kidx, length, random, ret, _i, _ref, _results;
 
         if (!options) {
           throw new Exception("Must pass iterator to #each_random");
@@ -242,6 +248,7 @@
         random = function(min, max) {
           return Math.floor(Math.random() * (max - min)) + min;
         };
+        data = {};
         if (context && typeof context === "object") {
           keys = void 0;
           if (context instanceof Array) {
@@ -254,10 +261,17 @@
             keys = Object.keys(context);
           }
           length = keys.length;
+          i = 0;
           while (keys.length > 0) {
             kidx = random(0, keys.length);
             key = keys.splice(kidx, 1);
-            ret = ret + options.fn(context[key]);
+            data.index = key;
+            data.key = key;
+            data.order = i;
+            ret = ret + options.fn(context[key], {
+              data: data
+            });
+            i++;
           }
         }
         return ret;

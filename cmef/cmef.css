@@ -9,6 +9,46 @@ body {
   /*padding: 20px;*/
 }
 
+.center-container {
+  vertical-align: middle;
+  width: 100%;
+  height: 90%;
+  padding: 0;
+}
+
+.center-container .container {
+  vertical-align: middle;
+  width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
+.center-container .helper {
+  display: inline-block;
+  height: 30%;
+  vertical-align: middle;
+}
+
+.center-image {
+  vertical-align: middle;
+  text-align: center;
+
+  height: 100%;
+}
+
+.center-image .helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.center-image img {
+  vertical-align: middle;
+  margin: auto;
+  height: auto;
+  display: inline-block;
+}
+
 footer {
   position: absolute;
   left: 0;
@@ -40,7 +80,7 @@ p#participant {
   display: none;
 }
 
-body.text-center, td.text-center {
+.text-center {
   text-align: center;
 }
 

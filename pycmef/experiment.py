@@ -40,8 +40,10 @@ class Experiment(
     super(Experiment, self).__init__()
     self.file = file
     self.directory = os.path.dirname(file)
+    self.debug = False
 
     ExperimentLoader(self)
+    self.set_debug(self.debug)
 
     self.register_runner_events()
     self.init_response()
@@ -49,6 +51,13 @@ class Experiment(
   def load_page(self, page):
     # print "Loading page: %s" % page
     self.web.load(QUrl(QString(page)))
+
+  def set_debug(self, debug):
+    self.debug = debug
+    if self.data is None:
+      return
+
+    self.data['debug'] = debug
 
   def run(self):
     self.app = QApplication(sys.argv)

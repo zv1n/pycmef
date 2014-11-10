@@ -12,6 +12,12 @@ from pycmef.event_handler import *
 if "--pygaze" in sys.argv:
   from pycmef.pygaze_eyetracker import PygazeEyetracker
 
+if "--debug" in sys.argv:
+  debug = True
+else:
+  debug = False
+
+
 
 def usage():
   print('usage: cmef.py <experiment json or yml or directory>')
@@ -41,6 +47,7 @@ def main():
   copy_dependencies(os.path.dirname(config))
 
   exp = Experiment(config)
+  exp.set_debug(debug)
 
   # Try to instantiate PygazeEyetracker if the class exists.
   # Ignore the error if it doesn't.

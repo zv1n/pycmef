@@ -57,3 +57,5 @@ class PygazeEyetracker:
   def log_to_eyetracker(self, args):
     self.tracker.log(args.message)
     return ""
+
+
