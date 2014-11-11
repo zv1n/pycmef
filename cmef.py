@@ -55,6 +55,7 @@ def main():
     eyetracker = PygazeEyetracker()
     eyetracker.register(exp)
   except NameError:
+    print "No PygazeEyetracker defined."
     pass
 
   result = exp.run()

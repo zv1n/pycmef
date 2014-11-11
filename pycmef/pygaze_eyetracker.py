@@ -11,17 +11,7 @@ from pygaze import eyetracker
 
 
 class PygazeEyetracker:
-  def register(self, event_manager):
-    event_manager.register_events({
-      'calibrate_eyetracker': self.calibrate_eyetracker,
-      'start_tracking': self.start_tracking,
-      'stop_tracking': self.stop_tracking,
-      'log_to_eyetracker': self.log_to_eyetracker
-    })
-
-    self.init()
-
-  def init(self):
+  def __init__(self):
     # create display object
     self.disp = libscreen.Display()
 
@@ -33,9 +23,14 @@ class PygazeEyetracker:
 
     # create logfile object
     self.log = liblog.Logfile()
-    self.log.write(["trialnr", "trialtype", "endpos", "latency", "correct"])
 
-
+  def register(self, event_manager):
+    event_manager.register_events({
+      'calibrate_eyetracker': self.calibrate_eyetracker,
+      'start_tracking': self.start_tracking,
+      'stop_tracking': self.stop_tracking,
+      'log_to_eyetracker': self.log_to_eyetracker
+    })
 
   @returns_string
   def calibrate_eyetracker(self, args):
