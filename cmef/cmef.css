@@ -73,6 +73,13 @@ footer.cmef-buttons {
   background-color: #faf7f3;
 }
 
+footer.cmef-buttons-inverse {
+  border-top: 1px solid darkgrey;
+  text-align: right;
+
+  background-color: black;
+}
+
 footer .pure-button {
   margin: 10px;
 }
