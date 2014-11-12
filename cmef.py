@@ -7,10 +7,14 @@ import os
 from subprocess import call
 
 from pycmef.experiment import Experiment
+from pycmef.screencap import ScreenCapHandler
 from pycmef.event_handler import *
 
 if "--pygaze" in sys.argv:
   from pycmef.pygaze_eyetracker import PygazeEyetracker
+  load_pygaze = True
+else:
+  load_pygaze = False
 
 if "--debug" in sys.argv:
   debug = True
@@ -49,14 +53,14 @@ def main():
   exp = Experiment(config)
   exp.set_debug(debug)
 
+  cap = ScreenCapHandler()
+  cap.register(exp)
+
   # Try to instantiate PygazeEyetracker if the class exists.
   # Ignore the error if it doesn't.
-  try:
+  if load_pygaze:
     eyetracker = PygazeEyetracker()
     eyetracker.register(exp)
-  except NameError:
-    print "No PygazeEyetracker defined."
-    pass
 
   result = exp.run()
   sys.exit(result)

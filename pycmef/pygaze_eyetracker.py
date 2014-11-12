@@ -16,7 +16,7 @@ class PygazeEyetracker:
     self.disp = libscreen.Display()
 
     # create eyetracker object
-    self.tracker = eyetracker.EyeTracker(disp)
+    self.tracker = eyetracker.EyeTracker(self.disp)
 
     # create keyboard object
     self.keyboard = libinput.Keyboard(keylist=['space'], timeout=None)
@@ -27,8 +27,8 @@ class PygazeEyetracker:
   def register(self, event_manager):
     event_manager.register_events({
       'calibrate_eyetracker': self.calibrate_eyetracker,
-      'start_tracking': self.start_tracking,
-      'stop_tracking': self.stop_tracking,
+      'start_eyetracker': self.start_tracking,
+      'stop_eyetracker': self.stop_tracking,
       'log_to_eyetracker': self.log_to_eyetracker
     })
 

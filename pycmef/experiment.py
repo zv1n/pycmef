@@ -48,6 +48,8 @@ class Experiment(
     self.register_runner_events()
     self.init_response()
 
+    self.app = QApplication(sys.argv)
+
   def load_page(self, page):
     # print "Loading page: %s" % page
     self.web.load(QUrl(QString(page)))
@@ -60,8 +62,6 @@ class Experiment(
     self.data['debug'] = debug
 
   def run(self):
-    self.app = QApplication(sys.argv)
-
     self.web = EnhancedBrowser()
     self.register_connectors()
 

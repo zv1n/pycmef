@@ -5,10 +5,13 @@
   CMEF = (function() {
     function CMEF() {
       this.events = {};
+      this.responses = {};
       this.event_count = 0;
       this.times = {};
       this.iselectors = [];
       this.on_next = [];
+      this.loadables = 0;
+      this.want_screencap = false;
       this.mark('load');
     }
 
@@ -20,9 +23,8 @@
         return _this.handle_event_response(event, response);
       });
       this.load_data();
-      this.handlebars();
+      this.init_handlebars();
       this.initialized = true;
-      this.handle_event_response('ready', {});
       this.default_methods();
       this.auto_populate('attribute', function(target, value) {
         var attr;
@@ -35,8 +37,33 @@
       });
       this.auto_template();
       this.auto_enable();
-      this.auto_eyetracker();
       this.auto_input();
+      this.auto_eyetracker();
+      this.handle_event_response('ready', {});
+      this.emit("show", function(response) {
+        _this.mark('show');
+        $(".show-on-load").show();
+        if ($('body').data('eyetracker')) {
+          return _this.emit('screen_capture', function(response) {
+            var img, targ, _i, _len, _ref, _results;
+
+            _this.responses.screencap = response;
+            _ref = $('img[name]');
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              img = _ref[_i];
+              targ = $(img);
+              _results.push(_this.responses[targ.attr('name')] = {
+                y: targ.offset().top + window.screenY,
+                x: targ.offset().left + window.screenX,
+                width: targ.width(),
+                height: targ.height()
+              });
+            }
+            return _results;
+          });
+        }
+      });
     };
 
     CMEF.prototype.load_data = function() {
@@ -84,7 +111,6 @@
       var _this = this;
 
       if ($('body').data('eyetracker')) {
-        this.emit('screen_capture');
         this.emit('start_eyetracker');
         this.before_submit(function() {
           return _this.emit('stop_eyetracker');
@@ -105,23 +131,31 @@
           render = Handlebars.compile(value);
           target.data('render', render);
         }
-        modifier(target, render({
+        this.track_loadables(modifier(target, render({
           data: this.current
-        }));
+        })));
       }
     };
 
+    CMEF.prototype.handlebars = function($target) {
+      var html, rendered;
+
+      html = Handlebars.compile($target.html())({
+        data: this.current
+      });
+      rendered = $(html);
+      this.track_loadables(rendered);
+      return rendered;
+    };
+
     CMEF.prototype.auto_template = function() {
-      var $target, html, rendered, target, _i, _len, _ref;
+      var $target, rendered, target, _i, _len, _ref;
 
       _ref = $("[type='text/x-handlebars-template']");
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
         $target = $(target);
-        html = Handlebars.compile($target.html())({
-          data: this.current
-        });
-        rendered = $(html);
+        rendered = this.handlebars($target);
         rendered.insertBefore($target);
       }
     };
@@ -141,6 +175,34 @@
       }
     };
 
+    CMEF.prototype.track_loadable = function(img) {
+      var _this = this;
+
+      this.loadables++;
+      return $(img).ready(function() {
+        _this.loadables--;
+        if (_this.loadables === 0) {
+          return _this.handle_event_response('load:complete', {});
+        }
+      });
+    };
+
+    CMEF.prototype.track_loadables = function(html) {
+      var img, _i, _len, _ref, _results;
+
+      if (html.is('img, svg, canvas')) {
+        return this.track_loadable(html);
+      } else {
+        _ref = $('img, svg, canvas', html);
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          img = _ref[_i];
+          _results.push(this.track_loadable(img));
+        }
+        return _results;
+      }
+    };
+
     CMEF.prototype.input_selectors = function(sels) {
       var f, _i, _len;
 
@@ -156,7 +218,7 @@
     CMEF.prototype.collect_response = function() {
       var $target, cor, e, res, sel, _i, _j, _len, _len1, _ref, _ref1;
 
-      res = {};
+      res = this.responses;
       res.times = this.times;
       res.data = this.current;
       _ref = this.iselectors;
@@ -184,6 +246,10 @@
       return this.add_event_callback('ready', cb);
     };
 
+    CMEF.prototype.load = function(cb) {
+      return this.add_event_callback('load:complete', cb);
+    };
+
     CMEF.prototype.before_submit = function(cb) {
       this.on_next || (this.on_next = []);
       return this.on_next.push(cb);
@@ -206,7 +272,9 @@
       _results = [];
       for (_i = 0, _len = cbs.length; _i < _len; _i++) {
         cb = cbs[_i];
-        _results.push(cb(response));
+        _results.push(setTimeout(function() {
+          return cb(response);
+        }, 1));
       }
       return _results;
     };
@@ -234,7 +302,7 @@
       _experiment.emit(event, args);
     };
 
-    CMEF.prototype.handlebars = function() {
+    CMEF.prototype.init_handlebars = function() {
       return Handlebars.registerHelper("each_random", function(context, options) {
         var data, i, key, keys, kidx, length, random, ret, _i, _ref, _results;
 
@@ -285,29 +353,27 @@
   window.cmef = new CMEF();
 
   window.on_python_ready = function() {
-    var instantiate_cmef, load_js;
+    return setTimeout(function() {
+      var instantiate_cmef, load_js;
 
-    load_js = function(path, callback) {
-      var head, script;
+      load_js = function(path, callback) {
+        var head, script;
 
-      head = document.getElementsByTagName("head")[0];
-      script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = path;
-      script.onreadystatechange = callback;
-      script.onload = callback;
-      head.appendChild(script);
-    };
-    instantiate_cmef = function() {
-      cmef.initialize_experiment();
-      return cmef.emit("show", function(response) {
-        cmef.mark('show');
-        return $(".show-on-load").show();
+        head = document.getElementsByTagName("head")[0];
+        script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = path;
+        script.onreadystatechange = callback;
+        script.onload = callback;
+        head.appendChild(script);
+      };
+      instantiate_cmef = function() {
+        return cmef.initialize_experiment();
+      };
+      return load_js("../cmef/jquery.js", function() {
+        return load_js("../cmef/handlebars.js", instantiate_cmef);
       });
-    };
-    return load_js("../cmef/jquery.js", function() {
-      return load_js("../cmef/handlebars.js", instantiate_cmef);
-    });
+    }, 1);
   };
 
 }).call(this);

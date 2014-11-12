@@ -2,10 +2,13 @@
 class CMEF
   constructor: ->
     @events = {}
+    @responses = {}
     @event_count = 0
     @times = {}
     @iselectors = []
     @on_next = []
+    @loadables = 0
+    @want_screencap = false
 
     @mark('load')
 
@@ -18,10 +21,9 @@ class CMEF
       @handle_event_response(event, response)
 
     @load_data()
-    @handlebars()
+    @init_handlebars()
 
     @initialized = true
-    @handle_event_response('ready', {})
 
     @default_methods()
 
@@ -36,8 +38,25 @@ class CMEF
 
     @auto_template()
     @auto_enable()
-    @auto_eyetracker()
     @auto_input()
+    @auto_eyetracker()
+
+    @handle_event_response('ready', {})
+    @emit "show", (response) =>
+      @mark('show')
+      $(".show-on-load").show()
+      if $('body').data('eyetracker')
+        @emit('screen_capture', (response) =>
+          @responses.screencap = response
+          for img in $('img[name]')
+            targ = $(img)
+            @responses[targ.attr('name')] = {
+              y: targ.offset().top + window.screenY,
+              x: targ.offset().left + window.screenX,
+              width: targ.width(),
+              height: targ.height()
+            }
+        )
 
     return
 
@@ -73,7 +92,6 @@ class CMEF
 
   auto_eyetracker: ->
     if $('body').data('eyetracker')
-      @emit('screen_capture')
       @emit('start_eyetracker')
       @before_submit => @emit('stop_eyetracker')
 
@@ -89,23 +107,27 @@ class CMEF
         render = Handlebars.compile(value)
         target.data('render', render)
 
-      modifier(target, render({
+      @track_loadables modifier(target, render({
         data: @current
       }))
 
     return
 
+  handlebars: ($target) ->
+    html = Handlebars.compile($target.html())({
+      data: @current
+    })
+
+    rendered = $(html)
+    @track_loadables rendered
+    rendered
+
   auto_template: ->
     for target in $("[type='text/x-handlebars-template']")
       $target = $(target)
 
-      html = Handlebars.compile($target.html())({
-        data: @current
-      })
-
-      rendered = $(html)
+      rendered = @handlebars($target)
       rendered.insertBefore($target)
-
     return
 
   auto_enable: ->
@@ -119,6 +141,18 @@ class CMEF
 
     return
 
+  track_loadable: (img) ->
+    @loadables++
+    $(img).ready =>
+      @loadables--
+      @handle_event_response 'load:complete', {} if @loadables == 0
+
+  track_loadables: (html)->
+    if html.is('img, svg, canvas')
+      @track_loadable html
+    else for img in $('img, svg, canvas', html)
+      @track_loadable img
+
   input_selectors: (sels) ->
     unless sels instanceof Array
       sels = [sels]
@@ -129,7 +163,7 @@ class CMEF
     return
 
   collect_response: ->
-    res = {}
+    res = @responses
     res.times = @times
     res.data = @current
 
@@ -152,6 +186,9 @@ class CMEF
   ready: (cb) ->
     @add_event_callback('ready', cb)
 
+  load: (cb) ->
+    @add_event_callback('load:complete', cb)
+
   before_submit: (cb) ->
     @on_next ||= []
     @on_next.push cb
@@ -165,7 +202,9 @@ class CMEF
     return if !cbs
 
     for cb in cbs
-      cb(response)
+      setTimeout( ->
+        cb(response)
+      , 1)
 
   add_event_callback: (event, cb) ->
     @events[event] = [] unless @events.hasOwnProperty(event)
@@ -188,7 +227,7 @@ class CMEF
     _experiment.emit(event, args)
     return
 
-  handlebars: ->
+  init_handlebars: ->
     Handlebars.registerHelper "each_random", (context, options) ->
       throw new Exception("Must pass iterator to #each_random")  unless options
 
@@ -226,39 +265,36 @@ window.cmef = new CMEF()
 
 # Callback triggered when the Python ThinClient is ready.
 window.on_python_ready = ->
-  load_js = (path, callback) ->
-    #console.log('Force loading JQuery...')
+  setTimeout(->
+    load_js = (path, callback) ->
+      #console.log('Force loading JQuery...')
 
-    # Adding the script tag to the head as suggested before
-    head = document.getElementsByTagName("head")[0]
-    script = document.createElement("script")
-    script.type = "text/javascript"
-    script.src = path
-    
-    # Then bind the event to the callback function.
-    # There are several events for cross browser compatibility.
-    script.onreadystatechange = callback
-    script.onload = callback
-    
-    # Fire the loading
-    head.appendChild script
-    return
+      # Adding the script tag to the head as suggested before
+      head = document.getElementsByTagName("head")[0]
+      script = document.createElement("script")
+      script.type = "text/javascript"
+      script.src = path
+      
+      # Then bind the event to the callback function.
+      # There are several events for cross browser compatibility.
+      script.onreadystatechange = callback
+      script.onload = callback
+      
+      # Fire the loading
+      head.appendChild script
+      return
 
-  instantiate_cmef = ->
-    cmef.initialize_experiment()
+    instantiate_cmef = ->
+      cmef.initialize_experiment()
 
-    cmef.emit "show", (response) ->
-      cmef.mark('show')
-      $(".show-on-load").show()
+    load_js "../cmef/jquery.js", ->
+      load_js "../cmef/handlebars.js", instantiate_cmef
+  ,1)
 
-  load_js "../cmef/jquery.js", ->
-    load_js "../cmef/handlebars.js", instantiate_cmef
-
-
-# (->
-#   if navigator.userAgent.search(/Python/i) is -1
-#     console.log "disease"
-#   else
-#     console.log "disease"
-#   return
-# )()
+  # (->
+  #   if navigator.userAgent.search(/Python/i) is -1
+  #     console.log "disease"
+  #   else
+  #     console.log "disease"
+  #   return
+  # )()
