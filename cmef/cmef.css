@@ -16,6 +16,11 @@ body {
   padding: 0;
 }
 
+.inverse {
+  background-color: black;
+  color: white;
+}
+
 .center-container .container {
   vertical-align: middle;
   width: 100%;
