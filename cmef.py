@@ -12,21 +12,13 @@ from pycmef.experiment import Experiment
 from pycmef.screencap import ScreenCapHandler
 from pycmef.event_handler import *
 
-if "--pygaze" in sys.argv:
-  from pycmef.pygaze_eyetracker import PygazeEyetracker
-  load_pygaze = True
-else:
-  load_pygaze = False
-
-
 def usage():
   print('usage: cmef.py [-hdp] -e <experiment dir> -o <output dir>')
   sys.exit(1)
 
 def copy_dependencies(directory):
-  dest = os.path.join(directory, 'cmef')
-  jsfile = os.path.join(dest, 'cmef.js')
-  if os.path.exists(jsfile):
+  dest = "%scmef" % directory
+  if os.path.exists(dest):
     shutil.rmtree(dest)
   shutil.copytree('cmef', dest)
 
