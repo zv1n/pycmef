@@ -36,7 +36,7 @@ class Experiment(
   EventHandler):
 
   # Create init files for 
-  def __init__(self, file):
+  def __init__(self, file, output):
     super(Experiment, self).__init__()
     self.file = file
     self.directory = os.path.dirname(file)
@@ -46,12 +46,12 @@ class Experiment(
     self.set_debug(self.debug)
 
     self.register_runner_events()
-    self.init_response()
+    self.init_response(output)
 
     self.app = QApplication(sys.argv)
 
   def load_page(self, page):
-    # print "Loading page: %s" % page
+    # print "Loading page: %s" % page\
     self.web.load(QUrl(QString(page)))
 
   def set_debug(self, debug):

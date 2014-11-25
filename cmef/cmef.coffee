@@ -46,17 +46,22 @@ class CMEF
       @mark('show')
       $(".show-on-load").show()
       if $('body').data('eyetracker')
-        @emit('screen_capture', (response) =>
-          @responses.screencap = response
-          for img in $('img[name]')
-            targ = $(img)
-            @responses[targ.attr('name')] = {
-              y: targ.offset().top + window.screenY,
-              x: targ.offset().left + window.screenX,
-              width: targ.width(),
-              height: targ.height()
-            }
-        )
+        setTimeout(=>
+          @emit('screen_capture', (response) =>
+            @responses.screencap = response
+
+            for img in $('img[name]')
+              targ = $(img)
+              @responses[targ.attr('name')] = {
+                y: targ.offset().top + window.screenY,
+                x: targ.offset().left + window.screenX,
+                width: targ.width(),
+                height: targ.height()
+              }
+
+            return
+          )
+        , 500)
 
     return
 

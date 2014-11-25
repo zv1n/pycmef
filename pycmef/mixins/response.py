@@ -1,9 +1,13 @@
 
-import datetime, json
+import os
+import datetime
+import json
 
 class ResponseMixin:
-  def init_response(self):
+  def init_response(self, output):
     self.response = {}
+    self.output = output
+    self.output_path = None
 
   def add_core_response(self, args):
     self.response.update(args)
@@ -29,8 +33,19 @@ class ResponseMixin:
 
     return res
 
+  def ensure_path(self):
+    if self.output_path is None:
+      self.output_path = os.path.join(self.output, self.participant)
+
+      if not os.path.exists(self.output_path):
+        os.mkdir(self.output_path)
+      elif not os.path.isdir(self.output_path):
+        raise Exception('Participant directory is not a directory!')
+
   def record_response(self):
-    file = "%s_%s_%s.json" % (self.name, self.participant, datetime.date.today())
-    f = open(file, 'w')
+    self.ensure_path()
+
+    file = "%s_%s.json" % (self.name, datetime.date.today())
+    f = open(os.path.join(self.output_path, file), 'w')
     f.write(json.dumps(self.response, indent=2, sort_keys=True))
     f.close()

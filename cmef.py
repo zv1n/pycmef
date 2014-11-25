@@ -3,6 +3,8 @@
 import sys
 import glob
 import os
+import shutil
+import getopt
 
 from subprocess import call
 
@@ -16,25 +18,55 @@ if "--pygaze" in sys.argv:
 else:
   load_pygaze = False
 
-if "--debug" in sys.argv:
-  debug = True
-else:
-  debug = False
-
-
 
 def usage():
-  print('usage: cmef.py <experiment json or yml or directory>')
+  print('usage: cmef.py [-hdp] -e <experiment dir> -o <output dir>')
   sys.exit(1)
 
 def copy_dependencies(directory):
-  call(['cp', '-r', './cmef', directory])
+  dest = os.path.join(directory, 'cmef')
+  jsfile = os.path.join(dest, 'cmef.js')
+  if os.path.exists(jsfile):
+    shutil.rmtree(dest)
+  shutil.copytree('cmef', dest)
 
-def main():
-  if (len(sys.argv) <= 1):
+def main(argv):
+  if (len(argv) <= 1):
     usage()
 
-  experiment = sys.argv[1]
+  try:
+    long_form = ["help", "experiment=", "output=", "pygaze", "debug"]
+    opts, args = getopt.getopt(argv[1:], "he:o:pd", long_form)
+  except getopt.GetoptError:
+    usage()
+    sys.exit(2)
+
+  load_pygaze = False
+  debug = False
+  experiment = None
+  output_directory = None
+
+  for opt, arg in opts:
+    if opt in ("-d", "--debug"):
+      debug = True
+
+    elif opt in ("-h", "--help"):
+      usage()
+      sys.exit(1)
+
+    elif opt in ("-p", "--pygaze"):
+      from pycmef.pygaze_eyetracker import PygazeEyetracker
+      load_pygaze = True
+
+    elif opt in ("-e", "--experiment="):
+      experiment = arg
+
+    elif opt in ("-o", "--output="):
+      output_directory = arg
+
+  if experiment is None or output_directory is None:
+    usage()
+    sys.exit(1)
 
   if os.path.isdir(experiment):
     try:
@@ -48,9 +80,13 @@ def main():
   else:
     config = experiment
 
+  if not os.path.isdir(output_directory):
+    usage()
+    sys.exit(1)
+
   copy_dependencies(os.path.dirname(config))
 
-  exp = Experiment(config)
+  exp = Experiment(config, output_directory)
   exp.set_debug(debug)
 
   cap = ScreenCapHandler()
@@ -67,7 +103,7 @@ def main():
 
 if __name__ == '__main__':
   # try:
-  main()
+  main(sys.argv)
   # except Exception as e:
   #   print str(e)
   #   usage()
