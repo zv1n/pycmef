@@ -155,8 +155,11 @@ class CMEF
   track_loadables: (html)->
     if html.is('img, svg, canvas')
       @track_loadable html
-    else for img in $('img, svg, canvas', html)
-      @track_loadable img
+    else
+      for img in $('img, svg, canvas', html)
+        @track_loadable img
+
+    return
 
   input_selectors: (sels) ->
     unless sels instanceof Array
@@ -173,12 +176,15 @@ class CMEF
     res.data = @current
 
     for sel in @iselectors
-      $target = $(sel)
-      res[$target.attr('name')] = $target.val()
+      for target in $(sel)
+        $target = $(target)
+        res[$target.attr('name')] = $target.val()
 
     for sel in $('[data-collect=true]')
       $target = $(sel)
-      res[$target.attr('name')] = $target.attr('value')
+      val = $target.val()
+      val = $target.attr('value') unless val
+      res[$target.attr('name')] = val
 
     try
       cor = res.data.question.correct.toString() == res.answer.toString()
@@ -210,6 +216,8 @@ class CMEF
       setTimeout( ->
         cb(response)
       , 1)
+
+    return
 
   add_event_callback: (event, cb) ->
     @events[event] = [] unless @events.hasOwnProperty(event)

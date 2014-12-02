@@ -17,10 +17,12 @@ def usage():
   sys.exit(1)
 
 def copy_dependencies(directory):
-  dest = "%scmef" % directory
+  if os.name != 'posix':
+    return
+  dest = os.path.join(directory, 'cmef')
   if os.path.exists(dest):
     shutil.rmtree(dest)
-  shutil.copytree('cmef', dest)
+  shutil.copytree('./cmef', dest)
 
 def main(argv):
   if (len(argv) <= 1):
