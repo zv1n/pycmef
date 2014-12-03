@@ -47,20 +47,7 @@ class CMEF
       $(".show-on-load").show()
       if $('body').data('eyetracker')
         setTimeout(=>
-          @emit('screen_capture', (response) =>
-            @responses.screencap = response
-
-            for img in $('img[name]')
-              targ = $(img)
-              @responses[targ.attr('name')] = {
-                y: targ.offset().top + window.screenY,
-                x: targ.offset().left + window.screenX,
-                width: targ.width(),
-                height: targ.height()
-              }
-
-            return
-          )
+          @screencap()
         , 500)
 
     return
@@ -199,6 +186,26 @@ class CMEF
 
   load: (cb) ->
     @add_event_callback('load:complete', cb)
+
+  screencap: (name) ->
+    @emit('screen_capture', { name: name }, (response) =>
+      @responses.screencap ||= []
+      @responses.screencap.push response
+
+      # TODO: Screen position doesn't quite translate.
+      # for img in $('img[name]')
+      #   targ = $(img)
+      #   continue unless targ.is(':visible')
+
+      #   @responses[targ.attr('name')] = {
+      #     y: targ.offset().top + window.screenY,
+      #     x: targ.offset().left + window.screenX,
+      #     width: targ.width(),
+      #     height: targ.height()
+      #   }
+
+      return
+    )
 
   before_submit: (cb) ->
     @on_next ||= []

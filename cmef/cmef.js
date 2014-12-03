@@ -45,22 +45,7 @@
         $(".show-on-load").show();
         if ($('body').data('eyetracker')) {
           return setTimeout(function() {
-            return _this.emit('screen_capture', function(response) {
-              var img, targ, _i, _len, _ref;
-
-              _this.responses.screencap = response;
-              _ref = $('img[name]');
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                img = _ref[_i];
-                targ = $(img);
-                _this.responses[targ.attr('name')] = {
-                  y: targ.offset().top + window.screenY,
-                  x: targ.offset().left + window.screenX,
-                  width: targ.width(),
-                  height: targ.height()
-                };
-              }
-            });
+            return _this.screencap();
           }, 500);
         }
       });
@@ -254,6 +239,19 @@
 
     CMEF.prototype.load = function(cb) {
       return this.add_event_callback('load:complete', cb);
+    };
+
+    CMEF.prototype.screencap = function(name) {
+      var _this = this;
+
+      return this.emit('screen_capture', {
+        name: name
+      }, function(response) {
+        var _base;
+
+        (_base = _this.responses).screencap || (_base.screencap = []);
+        _this.responses.screencap.push(response);
+      });
     };
 
     CMEF.prototype.before_submit = function(cb) {

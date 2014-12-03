@@ -18,11 +18,18 @@ class ScreenCapHandler:
 
   @returns_string
   def capture(self, args):
-    filename = "p%s_%s_%s_%s.png" % (
+    name = args.get('name', None)
+
+    filename = "p%s_%s_%s_%s" % (
       self.experiment.participant,
       self.experiment.current_section.name,
       self.experiment.current_subsection.name,
       self.experiment.current_subsection.iteration - 1)
+
+    if not name is None:
+      filename = "%s_%s" % (filename, name)
+
+    filename = "%s.png" % filename
 
     file_path = os.path.join(self.experiment.output_path, filename)
 
