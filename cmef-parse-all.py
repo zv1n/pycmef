@@ -24,6 +24,8 @@ def run_parser(exec_command, experiment, definition):
   csv = "%s.csv" % os.path.splitext(basename)[0]
   output = os.path.join(outputdir, csv)
 
+  print "Generating output: %s for %s" % (csv, experiment)
+
   call([
       exec_command,
       "-c%s" % definition,
