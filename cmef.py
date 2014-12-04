@@ -6,8 +6,6 @@ import os
 import shutil
 import getopt
 
-from subprocess import call
-
 from pycmef.experiment import Experiment
 from pycmef.screencap import ScreenCapHandler
 from pycmef.event_handler import *
