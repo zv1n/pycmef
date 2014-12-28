@@ -24,6 +24,10 @@ class Section:
   def print_section(self):
     print "Subsection: %s" % ', '.join([sub.name for sub in self.subsections])
 
+  def configure_subsections(self):
+    for subsection in self.subsections:
+      subsection.configure()
+
   def process_subsections(self):
     try:
       subsections = self.section_data['subsections']

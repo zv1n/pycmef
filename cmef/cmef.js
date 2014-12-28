@@ -117,7 +117,8 @@
           target.data('render', render);
         }
         this.track_loadables(modifier(target, render({
-          data: this.current
+          data: this.current,
+          experiment: this.experiment
         })));
       }
     };
@@ -126,7 +127,8 @@
       var html, rendered;
 
       html = Handlebars.compile($target.html())({
-        data: this.current
+        data: this.current,
+        experiment: this.experiment
       });
       rendered = $(html);
       this.track_loadables(rendered);

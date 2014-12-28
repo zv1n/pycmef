@@ -21,7 +21,11 @@ class RunnerMixin:
   @returns_string
   def start_event(self, args):
     self.participant = args['participant']
+    self.condition = args.get('condition', None)
     self.add_core_response(args)
+
+    self.data_dict.set_condition(self.condition)
+    self.configure_sections()
 
     self.load_page(self.current_subsection.path(self.directory))
     return 'success'

@@ -18,8 +18,6 @@ class Subsection(DataIterationMixin):
     except:
       raise Exception("All subsections in %s must contain a name!" % parent.name)
 
-    self.configure_iterations()
-
   def path(self, relative = '.'):
     abs_html = '/'.join([self.parent.name, self.name])
     html = '/'.join([relative, self.parent.name, self.name])

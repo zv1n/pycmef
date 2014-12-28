@@ -16,6 +16,10 @@ class SectionManagerMixin:
       print "Section: %s" % sect.name
       sect.print_section()
 
+  def configure_sections(self):
+    for section in self.sections:
+      section.configure_subsections()
+
   def process_sections(self):
     try:
       self.sections = [Section(sec, self) for sec in self.data['sections']]

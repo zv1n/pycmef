@@ -12,9 +12,18 @@ class SelfText
   validated: ->
     $(".show-on-valid").show()
     $("#begin").click (event) ->
-      participant = $('#pid').val()
+      participant = $('#participant_id').val()
       condition = $('#condition').val()
-      return unless participant > 0
+
+      unless participant > 0
+        console.log('Invalid Participant')
+        return
+
+      if cmef.experiment.conditions instanceof Array
+        unless condition in cmef.experiment.conditions
+          console.log('Invalid Condition')
+          return
+
       cmef.emit 'start', {
         participant: participant,
         condition: condition

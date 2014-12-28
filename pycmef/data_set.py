@@ -6,12 +6,16 @@ from yaml import safe_load
 class DataSet:
   def __init__(self, data):
     self.data = data
+    self.condition = None
     self.process()
 
   def print_stats(self):
     print ', '.join([key for key in self.processed.keys()])
     for key in self.processed:
       print 'Key: %s Length: %s' % (key, len(self.processed[key]))
+
+  def set_condition(self, condition):
+    self.condition = condition
 
   def process(self):
     self.processed = {}
@@ -59,10 +63,24 @@ class DataSet:
       return []
 
     try:
-      return self.processed[dset]
+      condition_set = None
+
+      if self.condition is not None:
+        # Allow for data sets to be chosen by condition.
+        set_name = "%s:%s" % (dset, self.condition)
+        condition_set = self.processed.get(set_name, None)
+
+        # Prefer the conditional set over a raw set name
+        if condition_set is not None:
+          return condition_set
+
+      if condition_set is None:
+        return self.processed[dset]
     except KeyError:
       raise Exception("The requested dataset (%s) does not exist!" % dset)
 
+  def has_set(self, dset):
+    return (self.processed.get(dset, None) is not None)
 
   def to_json(self, key = None):
     if key is None:

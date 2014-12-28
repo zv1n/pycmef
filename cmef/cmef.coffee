@@ -100,14 +100,16 @@ class CMEF
         target.data('render', render)
 
       @track_loadables modifier(target, render({
-        data: @current
+        data: @current,
+        experiment: @experiment
       }))
 
     return
 
   handlebars: ($target) ->
     html = Handlebars.compile($target.html())({
-      data: @current
+      data: @current,
+      experiment: @experiment
     })
 
     rendered = $(html)

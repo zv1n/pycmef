@@ -7,12 +7,12 @@ from pycmef.iterators import *
 class DataIterationMixin:
   iteration = 0
 
-  def configure_iterations(self):
+  def configure(self):
     self.iter_count = self.sub_data.get('iterations', 1)
     self.set_count = self.sub_data.get('sets', 1)
-
     self.this_set = self.sub_data.get('data', None)
     self.selected_data = self.parent.data.get_set(self.this_set)
+
     self.select_iterator()
 
   def data_to_json(self):
