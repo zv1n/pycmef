@@ -8,16 +8,28 @@ class DataIterationMixin:
   iteration = 0
 
   def configure(self):
-    self.iter_count = self.sub_data.get('iterations', 1)
     self.set_count = self.sub_data.get('sets', 1)
     self.this_set = self.sub_data.get('data', None)
     self.selected_data = self.parent.data.get_set(self.this_set)
+
+    default_iter = 1
+
+    if self.selected_data is not None:
+      default_iter = len(self.selected_data)
+
+    self.iter_count = self.sub_data.get('iterations', default_iter)
 
     self.select_iterator()
 
   def data_to_json(self):
     try:
       return json.dumps(self.current_data)
+    except AttributeError:
+      return '{}'
+
+  def dataset_to_json(self):
+    try:
+      return json.dumps(self.selected_data)
     except AttributeError:
       return '{}'
 

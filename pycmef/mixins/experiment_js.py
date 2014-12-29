@@ -30,12 +30,16 @@ class ExperimentJSMixin(QObject):
     return json.dumps(self.data)
 
   # Entire dataset (post-processed).
-  def dataset_json(self):  
+  def datasets_json(self):  
     return self.data_dict.to_json()
 
   # Just this subsection data.
   def data_json(self):
     return self.current_subsection.data_to_json()
+
+  # Just this subsection data.
+  def dataset_json(self):
+    return self.current_subsection.dataset_to_json()
 
   # Current data field
   def subsection_json(self):  
@@ -43,9 +47,10 @@ class ExperimentJSMixin(QObject):
 
   on_event_response = pyqtSignal(str, str)
 
-  experiment = pyqtProperty(str, fget=experiment_json)
-  dataset = pyqtProperty(str, fget=dataset_json)
   subsection = pyqtProperty(str, fget=subsection_json)
+  experiment = pyqtProperty(str, fget=experiment_json)
+  datasets = pyqtProperty(str, fget=datasets_json)
+  dataset = pyqtProperty(str, fget=dataset_json)
   current = pyqtProperty(str, fget=data_json)
 
   def register_connectors(self):

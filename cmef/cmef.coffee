@@ -1,3 +1,105 @@
+class Timer
+  constructor: (@name, @duration) ->
+    @current = 0
+    @init_dom()
+
+    setTimeout(=>
+      cmef.handle_event_response("timer:#{@name}", {})
+    , @duration)
+
+  init_dom: ->
+    @dom = $("##{@name}.timer")
+    return unless @dom.length > 0
+
+    @update_display()
+
+  update_display: ->
+    timeout = 1000
+    delta = @duration - @current
+    if delta < 1000
+      timeout = delta
+
+    setTimeout(=>
+      @current += timeout
+      @update_display()
+    , timeout)
+
+    @dom.html(Math.floor(delta/1000))
+
+
+
+
+class Range
+  constructor: (@validator, @name, @value) ->
+    list = @value.split('-')
+
+    if list.length == 2
+      @low = parseInt(list[0])
+      @high = parseInt(list[1])
+    else
+      @low = 0
+      @high = parseInt(list[0])
+
+  is_valid: (val) ->
+    ival = parseInt(val)
+    return (ival >= @low && ival <= @high)
+
+
+
+
+class Match
+  constructor: (@validator, @name, @value) ->
+
+  is_valid: (val) ->
+    valid = (val.substring(0,3) == @value.substring(0,3))
+    @validator.valid(@name, valid)
+    true
+
+
+
+
+class Validator
+  constructor: (@constraints) ->
+    @validity = {}
+
+    for name of @constraints
+      do (name) =>
+        dom = $("[name='#{name}']")
+        constraint = @constraints[name]
+        value = cmef.handlebars_value(constraint.value)
+
+        comparison = @comparator(name, constraint.type, value)
+        dom.data('validator', comparison)
+
+        change = (event) =>
+          @validity[name] = comparison.is_valid(event.currentTarget.value)
+
+          if @all_valid()
+            $('[data-enable-on-valid]').attr('disabled', false).removeClass('pure-button-disabled')
+          else
+            $('[data-enable-on-valid]').attr('disabled', true).addClass('pure-button-disabled')
+
+        dom.on 'change.validate', change
+        dom.on 'keyup.validate', change
+        dom.on 'data:modified.validate', change
+
+        dom.trigger('data:modified')
+
+  all_valid: ->
+    res = true
+    for f of @validity
+      res = res && @validity[f]
+    return res
+
+  comparator: (name, type, value) ->
+    switch type
+      when 'range' then return new Range(this, name, value)
+      when 'match' then return new Match(this, name, value)
+      else return undefined
+
+  valid: (name, val) ->
+    cmef.responses["#{name}_correct"] = val
+
 
 class CMEF
   constructor: ->
@@ -41,6 +143,9 @@ class CMEF
     @auto_input()
     @auto_eyetracker()
 
+    @init_timers()
+    @init_validators()
+
     @handle_event_response('ready', {})
     @emit "show", (response) =>
       @mark('show')
@@ -54,7 +159,8 @@ class CMEF
 
   load_data: ->
     @current = JSON.parse(_experiment.current || '{}')
-    @data = JSON.parse(_experiment.dataset || '{}')
+    @dataset = JSON.parse(_experiment.dataset || '{}')
+    @datasets = JSON.parse(_experiment.datasets || '{}')
     @subsection = JSON.parse(_experiment.subsection)
     @experiment = JSON.parse(_experiment.experiment)
 
@@ -64,7 +170,7 @@ class CMEF
     @times[name] = (new Date()).getTime()
 
   default_methods: ->
-    $('#next[data-default="true"]').click (event) =>
+    $('[data-default="true"]').click (event) =>
       @mark('submit')
       @submit(@collect_response())
 
@@ -75,6 +181,16 @@ class CMEF
       cb()
 
     @emit('next', content)
+
+  init_validators: ->
+    if @subsection.constraints
+      @validator = new Validator(@subsection.constraints)
+
+  init_timers: ->
+    @timers ?= []
+
+    for name, duration of @subsection.timers
+      @timers.push new Timer(name, duration)
 
   auto_input: ->
     for target in $('[data-input]')
@@ -99,22 +215,26 @@ class CMEF
         render = Handlebars.compile(value)
         target.data('render', render)
 
-      @track_loadables modifier(target, render({
-        data: @current,
-        experiment: @experiment
-      }))
+      @track_loadables modifier(target, render(@render_data()))
 
     return
 
-  handlebars: ($target) ->
-    html = Handlebars.compile($target.html())({
+  render_data: ->
+    {
       data: @current,
-      experiment: @experiment
-    })
+      experiment: @experiment,
+      dataset: @dataset
+    }
+
+  handlebars: ($target) ->
+    html = Handlebars.compile($target.html())(@render_data())
 
     rendered = $(html)
     @track_loadables rendered
     rendered
+
+  handlebars_value: (value) ->
+    Handlebars.compile(value)(@render_data())
 
   auto_template: ->
     for target in $("[type='text/x-handlebars-template']")
@@ -130,8 +250,22 @@ class CMEF
       $target.addClass('pure-button-disabled').attr('disabled', true)
       selector = $target.data('enable-on')
 
-      $(selector).data('enable-target', target).change ->
+      etarg = $(selector).data('enable-target', target)
+
+      change = ->
+        validator = etarg.data('validator')
+
+        if validator
+          return unless validator.is_valid(etarg.val())
+
         $target.removeClass('pure-button-disabled').attr('disabled', false)
+
+      etarg.change change
+      etarg.keyup change
+
+    for target in $("[data-enable-on-valid]")
+      $target = $(target)
+      $target.addClass('pure-button-disabled').attr('disabled', true)
 
     return
 
@@ -235,6 +369,9 @@ class CMEF
       @events[event].push cb
 
     return
+
+  timer: (event, cb) ->
+    @add_event_callback("timer:#{event}", cb)
 
   emit: (event, cb_or_args, cb) ->
     if cb_or_args instanceof Function

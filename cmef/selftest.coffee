@@ -29,6 +29,10 @@ class SelfText
         condition: condition
       }
 
+    cmef.emit 'start', {
+      participant: "1337",
+      condition: "A"
+    }
   fail: ->
     $(".show-on-failure").show()
 

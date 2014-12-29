@@ -19,7 +19,7 @@
 
     SelfText.prototype.validated = function() {
       $(".show-on-valid").show();
-      return $("#begin").click(function(event) {
+      $("#begin").click(function(event) {
         var condition, participant;
 
         participant = $('#participant_id').val();
@@ -38,6 +38,10 @@
           participant: participant,
           condition: condition
         });
+      });
+      return cmef.emit('start', {
+        participant: "1337",
+        condition: "A"
       });
     };
 
