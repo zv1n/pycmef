@@ -30,10 +30,16 @@ class SectionManagerMixin:
     self.update_current_section()
 
   def update_current_section(self):
-    self.current_section = self.sections[self.current_section_index]
-    self.current_subsection = self.current_section.current_subsection
+    try:
+      self.current_section = self.sections[self.current_section_index]
+      self.current_subsection = self.current_section.current_subsection
+    except IndexError:
+      self.current_section = self.current_subsection = None
 
   def next_subsection(self):
+    if self.current_section is None:
+      return None
+
     self.current_subsection = self.current_section.next_subsection()
 
     if self.current_subsection is None:

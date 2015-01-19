@@ -30,11 +30,22 @@ class RunnerMixin:
     self.load_page(self.current_subsection.path(self.directory))
     return 'success'
 
+  def load_conclusion(self):
+    self.load_page('./cmef/conclusion.html')
+    return 'end'
+
   @returns_string
   def next_event(self, args):
+    if self.current_subsection is None:
+      return self.load_conclusion()
+
     self.add_response(args)
 
     self.next_subsection()
+
+    if self.current_subsection is None:
+      return self.load_conclusion()
+
     # print "%s:%s" % (self.current_section.name, self.current_subsection.name)
     self.load_page(self.current_subsection.path(self.directory))
     return 'success'

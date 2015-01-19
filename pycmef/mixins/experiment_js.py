@@ -26,23 +26,32 @@ class ExperimentJSMixin(QObject):
     self.on_event_response.emit(event, result)
 
   # Entire experiment data file.
-  def experiment_json(self):  
+  def experiment_json(self):
     return json.dumps(self.data)
 
   # Entire dataset (post-processed).
-  def datasets_json(self):  
+  def datasets_json(self):
     return self.data_dict.to_json()
 
   # Just this subsection data.
   def data_json(self):
+    if self.current_subsection is None:
+      print 'Current Subsection is empty!'
+      return '{}'
     return self.current_subsection.data_to_json()
 
   # Just this subsection data.
   def dataset_json(self):
+    if self.current_subsection is None:
+      print 'Current Subsection is empty!'
+      return '{}'
     return self.current_subsection.dataset_to_json()
 
   # Current data field
-  def subsection_json(self):  
+  def subsection_json(self):
+    if self.current_subsection is None:
+      print 'Current Subsection is empty!'
+      return '{}'
     return self.current_subsection.to_json()
 
   on_event_response = pyqtSignal(str, str)

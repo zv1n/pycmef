@@ -14,8 +14,15 @@ class ResponseMixin:
     self.record_response()
 
   def add_response(self, args):
-    sec_name = self.current_section.name
-    subsec_name = self.current_subsection.name
+    if self.current_section is None:
+      sec_name = 'invalid'
+    else:
+      sec_name = self.current_section.name
+
+    if self.current_subsection is None:
+      subsec_name = 'invalid'
+    else:
+      subsec_name = self.current_subsection.name
 
     sec = self.get_or_create(self.response, sec_name, {})
     sub_sec = self.get_or_create(sec, subsec_name, [])
