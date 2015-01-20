@@ -11,7 +11,7 @@ class Section:
 
     if not isinstance(section, dict):
       raise Exception("Section must be an Dictionary!")
-    
+
     self.section_data = section
 
     try:
@@ -45,16 +45,16 @@ class Section:
       print "Current Sub: %s" % self.current_subsection.name
 
   def next_subsection(self):
-    if self.current_subsection.should_repeat():
-      self.current_subsection.next()
-      return self.current_subsection
-    else:
+    if not self.current_subsection.should_repeat():
       self.current_subsection_index += 1
       try:
         self.current_subsection = self.subsections[self.current_subsection_index]
-        return self.current_subsection
+
       except IndexError:
         return None
+
+    self.current_subsection.next()
+    return self.current_subsection
 
   def to_json(self):
     return json.dumps(self.section_data)

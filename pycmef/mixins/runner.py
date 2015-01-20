@@ -20,6 +20,10 @@ class RunnerMixin:
 
   @returns_string
   def start_event(self, args):
+    if self.started == True:
+      return 'failed'
+
+    self.started = True
     self.participant = args['participant']
     self.condition = args.get('condition', None)
     self.add_core_response(args)
@@ -27,6 +31,7 @@ class RunnerMixin:
     self.data_dict.set_condition(self.condition)
     self.configure_sections()
 
+    self.current_subsection.next()
     self.load_page(self.current_subsection.path(self.directory))
     return 'success'
 

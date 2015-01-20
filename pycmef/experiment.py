@@ -35,12 +35,13 @@ class Experiment(
   RunnerMixin,
   EventHandler):
 
-  # Create init files for 
+  # Create init files for
   def __init__(self, file, output):
     super(Experiment, self).__init__()
     self.file = file
     self.directory = os.path.dirname(file)
     self.debug = False
+    self.started = False
 
     ExperimentLoader(self)
     self.set_debug(self.debug)

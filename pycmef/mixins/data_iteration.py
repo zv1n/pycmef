@@ -5,7 +5,7 @@ import sys, json, os
 from pycmef.iterators import *
 
 class DataIterationMixin:
-  iteration = 0
+  iteration = -1
 
   def configure(self):
     self.set_count = self.sub_data.get('sets', 1)
@@ -34,7 +34,7 @@ class DataIterationMixin:
       return '{}'
 
   def should_repeat(self):
-    print "IT: %s CU: %s" % (self.iter_count, self.iteration)
+    print "MAX: %s CUR: %s" % (self.iter_count, self.iteration)
     return (self.iter_count > self.iteration) and (not self.iterator.done())
 
   def next(self):
@@ -56,9 +56,11 @@ class DataIterationMixin:
 
     if self.set_count == 1:
       index = self.iterator.next()
+
       self.current_data = self.selected_data[index]
       self.current_data['index'] = index
       self.current_data['order'] = self.iterator.count()
+      print "Order: %s" % self.iterator.count()
     else:
       indexes = [self.iterator.next() for i in range(self.set_count)]
       self.current_data = [self.selected_data[idx] for idx in indexes]
@@ -69,11 +71,15 @@ class DataIterationMixin:
 
   def select_iterator(self):
     self.order = self.sub_data.get('order', 'sequential')
-    self.iterator = {
-      'sequential': SequentialIterator(),
-      'random:dependent': RandomIterator()
-    }[self.order]
+
+    try:
+      self.iterator = {
+        'sequential': SequentialIterator(),
+        'random:dependent': RandomIterator()
+      }[self.order]
+    except KeyError:
+      print 'Invalid ORDER specified in %s %s' % (self.parent.name, self.name)
+      self.iterator = SequentialIterator()
 
     self.data_len = len(self.selected_data)
     self.iterator.set_range(0, self.iter_count)
-    self.next()
