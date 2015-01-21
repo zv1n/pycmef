@@ -1,1 +1,1 @@
-"C:\Program Files\VideoLAN\VLC\VLC.exe" "%1" "vlc://quit"
+START /B "" "C:\Program Files (x86)\VideoLAN\VLC\VLC.exe" -I none %1 vlc://quit

@@ -59,6 +59,9 @@ class RandomGroup(Iterator):
     self.group = RandomGroup.get_group(order)
     self.list = []
 
+  def count(self):
+    return self.length - len(self.list) - 1
+
   def set_range(self, low, high):
     list = RandomGroup.groups.get(self.group, None)
 
