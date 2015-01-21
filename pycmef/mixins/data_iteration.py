@@ -5,6 +5,12 @@ import sys, json, os
 from pycmef.iterators import *
 
 class DataIterationMixin:
+  iterators = [
+    SequentialIterator,
+    RandomIterator,
+    RandomGroup
+  ]
+
   iteration = -1
 
   def configure(self):
@@ -71,15 +77,17 @@ class DataIterationMixin:
 
   def select_iterator(self):
     self.order = self.sub_data.get('order', 'sequential')
+    self.iterator = None
 
-    try:
-      self.iterator = {
-        'sequential': SequentialIterator(),
-        'random:dependent': RandomIterator()
-      }[self.order]
-    except KeyError:
-      print 'Invalid ORDER specified in %s %s' % (self.parent.name, self.name)
-      self.iterator = SequentialIterator()
+    for iterator in DataIterationMixin.iterators:
+      if iterator.is_type(self.order):
+        self.iterator = iterator(self.order)
+        print "(%s) Iterator: %s" % (self.name, iterator.type())
+        break
+
+    if self.iterator is None:
+      print 'Invalid ORDER (%s) specified in %s %s' % (self.order, self.parent.name, self.name)
+      self.iterator = SequentialIterator(self.order)
 
     self.data_len = len(self.selected_data)
     self.iterator.set_range(0, self.iter_count)

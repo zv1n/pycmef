@@ -27,8 +27,8 @@ def main(argv):
     usage()
 
   try:
-    long_form = ["help", "experiment=", "output=", "pygaze", "debug"]
-    opts, args = getopt.getopt(argv[1:], "he:o:pd", long_form)
+    long_form = ["help", "experiment=", "output=", "pygaze", "audio", "debug"]
+    opts, args = getopt.getopt(argv[1:], "he:o:pad", long_form)
   except getopt.GetoptError:
     usage()
     sys.exit(2)
@@ -49,6 +49,10 @@ def main(argv):
     elif opt in ("-p", "--pygaze"):
       from pycmef.pygaze_eyetracker import PygazeEyetracker
       load_pygaze = True
+
+    elif opt in ("-a", "--audio"):
+      from pycmef.pyaudio_handler import PyAudioHandler
+      load_pyaudio = True
 
     elif opt in ("-e", "--experiment="):
       experiment = arg
@@ -89,6 +93,12 @@ def main(argv):
   if load_pygaze:
     eyetracker = PygazeEyetracker()
     eyetracker.register(exp)
+
+  # Try to instantiate PyAudioHandler if the class exists.
+  # Ignore the error if it doesn't.
+  if load_pyaudio:
+    audio = PyAudioHandler()
+    audio.register(exp)
 
   result = exp.run()
   sys.exit(result)
