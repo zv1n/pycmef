@@ -10,7 +10,9 @@ from pycmef.experiment import Experiment
 from pycmef.screencap import ScreenCapHandler
 from pycmef.event_handler import *
 
-def usage():
+def usage(error = None):
+  if error is not None:
+    print(error)
   print('usage: cmef.py [-hdp] -e <experiment dir> -o <output dir>')
   sys.exit(1)
 
@@ -24,13 +26,13 @@ def copy_dependencies(directory):
 
 def main(argv):
   if (len(argv) <= 1):
-    usage()
+    usage('Not enough arguments provided.')
 
   try:
     long_form = ["help", "experiment=", "output=", "pygaze", "audio", "debug"]
     opts, args = getopt.getopt(argv[1:], "he:o:pad", long_form)
-  except getopt.GetoptError:
-    usage()
+  except getopt.GetoptError as error:
+    usage(str(error))
     sys.exit(2)
 
   load_pygaze = False
@@ -61,7 +63,7 @@ def main(argv):
       output_directory = arg
 
   if experiment is None or output_directory is None:
-    usage()
+    usage('Experiment or Output directory was not found.')
     sys.exit(1)
 
   if os.path.isdir(experiment):
@@ -77,7 +79,7 @@ def main(argv):
     config = experiment
 
   if not os.path.isdir(output_directory):
-    usage()
+    usage('Provided output directory is not a directory!')
     sys.exit(1)
 
   copy_dependencies(os.path.dirname(config))
