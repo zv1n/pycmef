@@ -29,7 +29,7 @@ class PyAudioHandler:
         return False
 
     if os.path.exists(audio_script):
-      os.system("%s '%s' &" % (audio_script, file))
+      os.system("%s \"%s\" &" % (audio_script, file))
       return True
 
     return False
