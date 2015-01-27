@@ -74,6 +74,8 @@ class ExperimentJSMixin(QObject):
   def on_load(self):
     page = self.html_view().page()
     page.settings().setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
+    page.settings().setAttribute(QWebSettings.LocalContentCanAccessRemoteUrls, True)
+    page.settings().setAttribute(QWebSettings.LocalContentCanAccessFileUrls, True)
 
     main_frame = page.mainFrame()
     main_frame.addToJavaScriptWindowObject("_experiment", self)
