@@ -6,7 +6,9 @@ import json
 import os
 import csv
 
-def usage():
+def usage(error = None):
+  if error is not None:
+    print error
   print('usage: cmef-parser.py [-h] -c <config> -i <experiment output> -o <output file>')
   sys.exit(1)
 
@@ -163,13 +165,13 @@ class ConfigEngine:
 
 def main(argv):
   if (len(argv) <= 1):
-    usage()
+    usage("Invalid number of arguments.")
 
   try:
     long_form = ["help", "input=", "config=", "output="]
     opts, args = getopt.getopt(argv[1:], "hi:o:c:", long_form)
-  except getopt.GetoptError:
-    usage()
+  except getopt.GetoptError as err:
+    usage("Invalid option: %s" % err)
     sys.exit(2)
 
   input_file = None
@@ -191,13 +193,16 @@ def main(argv):
       output_file = arg
 
   if input_file is None or config_file is None or output_file is None:
-    usage()
+    usage("No input/config/output file specified.")
     sys.exit(1)
 
   if not os.path.isfile(input_file) or not os.path.isfile(config_file):
-    usage()
+    usage("Invalid input or configuration file path.")
     sys.exit(1)
 
+  generate_output_file(input_file, config_file, output_file)
+
+def generate_output_file(input_file, config_file, output_file):
   handle = open(input_file)
   experiment = json.load(handle)
   handle.close()

@@ -6,9 +6,13 @@ import os
 import csv
 import glob
 
+from cmef_parser import generate_output_file
+
 from subprocess import call
 
-def usage():
+def usage(error = None):
+  if error is not None:
+    print error
   print('usage: cmef-parse-all.py -d <parser-files dir> -o <test output dir> -e <exec command>')
   sys.exit(1)
 
@@ -25,21 +29,15 @@ def run_parser(exec_command, experiment, definition):
   output = os.path.join(outputdir, csv)
 
   print "Generating output: %s for %s" % (csv, experiment)
-
-  call([
-      exec_command,
-      "-c%s" % definition,
-      "-i%s" % experiment,
-      "-o%s" % output
-    ])
+  generate_output_file(experiment, definition, output)
 
 def main(argv):
   if (len(argv) <= 1):
     usage()
 
   try:
-    long_form = ["help", "definitions=", "output=", "exec="]
-    opts, args = getopt.getopt(argv[1:], "hd:o:e:", long_form)
+    long_form = ["help", "definitions=", "output="]
+    opts, args = getopt.getopt(argv[1:], "hd:o:", long_form)
   except getopt.GetoptError:
     usage()
     sys.exit(2)
@@ -59,14 +57,12 @@ def main(argv):
     elif opt in ("-o", "--output="):
       out_dir = arg
 
-    elif opt in ("-e", "--exec="):
-      ecommand = arg
+  if def_dir is None:
+    usage("No parser definition directory specified.")
+    sys.exit(1)
 
-  if os.path.isfile('./cmef-parser.py') and ecommand is None:
-    ecommand = './cmef-parser.py'
-
-  if def_dir is None or out_dir is None or ecommand is None:
-    usage()
+  if out_dir is None:
+    usage("No output directory specified.")
     sys.exit(1)
 
   if not os.path.isdir(def_dir) or not os.path.isdir(out_dir):
