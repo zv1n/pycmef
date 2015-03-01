@@ -36,6 +36,7 @@ def main(argv):
     sys.exit(2)
 
   load_pygaze = False
+  load_pyaudio = False
   debug = False
   experiment = None
   output_directory = None
