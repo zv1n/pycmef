@@ -2,92 +2,114 @@
 
 import sys, json, os
 
-from pycmef.iterators import *
+from pycmef.data_iterator import DataIterator
 
 class DataIterationMixin:
-  iterators = [
-    SequentialIterator,
-    RandomIterator,
-    RandomGroup
-  ]
-
-  iteration = -1
-
-  def configure(self):
-    self.set_count = self.sub_data.get('sets', 1)
-    self.this_set = self.sub_data.get('data', None)
-    self.selected_data = self.parent.data.get_set(self.this_set)
-
-    default_iter = 1
-
-    if self.selected_data is not None:
-      default_iter = len(self.selected_data)
-
-    self.iter_count = self.sub_data.get('iterations', default_iter)
-
-    self.select_iterator()
 
   def data_to_json(self):
     try:
-      return json.dumps(self.current_data)
+      if isinstance(self.selected_data, dict):
+        data_dict = dict()
+
+        for key in self.selected_data:
+          data_dict[key] = self.selected_data[key].current_data
+
+        return json.dumps(data_dict)
+      else:
+        return self.selected_data.data_to_json()
     except AttributeError:
       return '{}'
 
   def dataset_to_json(self):
     try:
-      return json.dumps(self.selected_data)
+      if isinstance(self.selected_data, dict):
+        data_dict = dict()
+
+        for key in self.selected_data:
+          data_dict[key] = self.selected_data[key].data_list
+
+        return json.dumps(data_dict)
+      else:
+        return self.selected_data.data_list_to_json()
     except AttributeError:
       return '{}'
-
-  def should_repeat(self):
-    print "MAX: %s CUR: %s" % (self.iter_count, self.iteration)
-    return (self.iter_count > self.iteration) and (not self.iterator.done())
 
   def next(self):
     self.iteration += 1
 
     if self.selected_data is None:
-      self.current_data = None
-      return
-
-    try:
-      self.load_data()
-      return True
-    except KeyError, IndexError:
       return False
 
-  def load_data(self):
-    if not self.selected_data:
-      return
-
-    if self.set_count == 1:
-      index = self.iterator.next()
-
-      self.current_data = self.selected_data[index]
-      self.current_data['index'] = index
-      self.current_data['order'] = self.iterator.count()
-      print "Order: %s" % self.iterator.count()
+    if isinstance(self.selected_data, dict):
+      for key in self.selected_data:
+        self.selected_data[key].next()
     else:
-      indexes = [self.iterator.next() for i in range(self.set_count)]
-      self.current_data = [self.selected_data[idx] for idx in indexes]
+      self.selected_data.next()
 
-      for idx in len(indexes):
-        self.current_data[idx]['index'] = indexes[idx]
-        self.current_data[idx]['order'] = self.iterator.count() + idx
+  def should_repeat(self):
+    print "MAX: %s CUR: %s" % (self.iterations, self.iteration)
+    return (self.iterations > self.iteration) and (not self.data_iterators_done())
 
-  def select_iterator(self):
-    self.order = self.sub_data.get('order', 'sequential')
-    self.iterator = None
+  def data_iterators_done(self):
+    if isinstance(self.selected_data, dict):
+      done = False
 
-    for iterator in DataIterationMixin.iterators:
-      if iterator.is_type(self.order):
-        self.iterator = iterator(self.order)
-        print "(%s) Iterator: %s" % (self.name, iterator.type())
-        break
+      for key in self.selected_data:
+        done = done or self.selected_data[key].done()
 
-    if self.iterator is None:
-      print 'Invalid ORDER (%s) specified in %s %s' % (self.order, self.parent.name, self.name)
-      self.iterator = SequentialIterator(self.order)
+      return done
+    else:
+      return self.selected_data.done()
 
-    self.data_len = len(self.selected_data)
-    self.iterator.set_range(0, self.iter_count)
+  def get_data(self, data_dict):
+    return data_dict.get('data', None)
+
+  def get_set_count(self, data_dict):
+    return data_dict.get('sets', 1)
+
+  def get_order(self, data_dict):
+    return data_dict.get('order', 'sequential')
+
+  def get_iteration_count(self, data_dict):
+    return data_dict.get('iterations', None)
+
+  def create_from_single_dataset(self, data_dict):
+    dataset = self.get_data(data_dict)
+    order = self.get_order(data_dict)
+    sets = self.get_set_count(data_dict)
+    contents = self.parent.data.get_set(dataset)
+
+    self.set_default_iterations(contents)
+
+    return DataIterator(self, sets = sets, iterations = self.iterations,
+                        order = order, dataset = dataset,
+                        data = contents)
+
+  def create_from_multiple_datasets(self, sub_data):
+    self.selected_data = dict()
+
+    for key in sub_data:
+      data_dict = sub_data[key]
+
+      self.selected_data[key] = self.create_from_single_dataset(data_dict)
+
+  def set_default_iterations(self, contents):
+    if self.iterations is None:
+      if contents is not None and isinstance(contents, list):
+        self.iterations = len(contents)
+
+    if self.iterations is None:
+      self.iterations = 1
+
+  def configure(self):
+    self.iteration = -1
+    self.iterations = self.get_iteration_count(self.sub_data)
+
+    data = self.get_data(self.sub_data)
+
+    if isinstance(data, str) or isinstance(data, unicode):
+      self.selected_data = self.create_from_single_dataset(self.sub_data)
+    elif isinstance(data, dict):
+      self.selected_data = self.create_from_multiple_datasets(data)
+
+
