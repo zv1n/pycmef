@@ -1,0 +1,54 @@
+{
+  "experiment": "Exp 2",
+  "sections": [
+    {
+      "name": "test_1",
+      "subsections": [
+        {
+          "name": "test_1",
+          "iterations": 3,
+          "order": "random:dependent",
+          "data": "test_1"
+        },
+        {
+          "name": "test_2",
+          "iterations": 3,
+          "data": {
+            "test_1": {
+              "data": "test_1",
+              "order": "random:dependent"
+            },
+            "test_2": {
+              "data": "test_2",
+              "order": "sequential"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "data": {
+    "test_1": [
+      {
+        "text": 1
+      },
+      {
+        "text": 2
+      },
+      {
+        "text": 3
+      }
+    ],
+    "test_2": [
+      {
+        "text": 4
+      },
+      {
+        "text": 5
+      },
+      {
+        "text": 6
+      }
+    ]
+  }
+}
