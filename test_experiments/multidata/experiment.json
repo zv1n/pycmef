@@ -12,6 +12,10 @@
         },
         {
           "name": "test_2",
+          "data": "test_1"
+        },
+        {
+          "name": "test_3",
           "iterations": 3,
           "data": {
             "test_1": {
@@ -23,7 +27,8 @@
               "order": "sequential"
             }
           }
-        }
+        },
+        "conclusion"
       ]
     }
   ],

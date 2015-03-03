@@ -1,0 +1,215 @@
+
+/* CMEF css */
+
+.show-on-load {
+  display: none;
+}
+
+body {
+  /*padding: 20px;*/
+}
+
+.center-container {
+  vertical-align: middle;
+  width: 100%;
+  height: 90%;
+  padding: 0;
+}
+
+.inverse {
+  background-color: black;
+  color: white;
+}
+
+.center-container .container {
+  vertical-align: middle;
+  width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
+.center-container .helper {
+  display: inline-block;
+  height: 30%;
+  vertical-align: middle;
+}
+
+.center-image {
+  vertical-align: middle;
+  text-align: center;
+
+  height: 100%;
+}
+
+.center-image .helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.center-image img {
+  vertical-align: middle;
+  margin: auto;
+  height: auto;
+  display: inline-block;
+}
+
+footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 50px;
+  width: 100%;
+}
+
+.cmef-buttons {
+  font-size: 14px;
+}
+
+footer.cmef-buttons {
+  border-top: 1px solid grey;
+  text-align: right;
+
+  background-color: #faf7f3;
+}
+
+footer.cmef-buttons-inverse {
+  border-top: 1px solid darkgrey;
+  text-align: right;
+
+  background-color: black;
+}
+
+footer .pure-button {
+  margin: 10px;
+}
+
+p#participant {
+  margin-bottom: 50px;
+}
+
+.show-on-valid, .show-on-failure {
+  display: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+body.text-middle, td.text-middle {
+  padding-top: 20%;
+}
+
+div.scroll-pane {
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+
+.form-control {
+  display: block;
+}
+
+table {
+  width: 100%;
+  height: 100%;
+}
+
+table.pure-table {
+  border: 0;
+}
+
+.pure-button {
+  border: 1px solid lightgrey;
+}
+
+input[type=button] {
+  cursor: pointer;
+  border: 1px solid lightgrey;
+}
+
+input[type=text], input[type=number] {
+  line-height: 1.5em;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+}
+
+
+/* foundational CSS */
+.pure-skin-mine .pure-table {
+    /* Remove spacing between table cells (from Normalize.css) */
+    border-collapse: collapse;
+    border-spacing: 0;
+    empty-cells: show;
+    border: 1px solid #090c16;
+}
+
+.pure-skin-mine .pure-table caption {
+    color: #4f4f4f;
+    font: italic 85%/1 arial, sans-serif;
+    padding: 1em 0;
+    text-align: center;
+}
+
+.pure-skin-mine .pure-table td,
+.pure-skin-mine .pure-table th {
+    border-left: 1px solid #090c16;/* inner column border */
+    border-width: 0 0 0 1px;
+    font-size: inherit;
+    margin: 0;
+    overflow: visible; /*to make ths where the title is really long work*/
+    padding: 0.3em 0.6em; /* cell padding */
+}
+
+.pure-skin-mine .pure-table td:first-child,
+.pure-skin-mine .pure-table th:first-child {
+    border-left-width: 0;
+}
+
+.pure-skin-mine .pure-table thead {
+    background-color: #263359;
+    color: #dbe0f0;
+    text-align: left;
+    vertical-align: bottom;
+}
+
+/*
+striping:
+   even - #fff (white)
+   odd  - #f2f2f2 (light gray)
+*/
+.pure-table td {
+    background-color: #12182b;
+    color: #bbc4e2;
+}
+.pure-table-odd td {
+    background-color: #090c16;
+    color: #b1bbdd;
+}
+
+/* nth-child selector for modern browsers */
+.pure-table-striped tr:nth-child(2n-1) td {
+    background-color: #090c16;
+    color: #b1bbdd;
+}
+
+
+/* BORDERED TABLES */
+.pure-table-bordered td {
+    border-bottom: 1px solid #090c16;
+}
+.pure-table-bordered tbody > tr:last-child td,
+.pure-table-horizontal tbody > tr:last-child td {
+    border-bottom-width: 0;
+}
+
+/* HORIZONTAL BORDERED TABLES */
+.pure-table-horizontal td,
+.pure-table-horizontal th {
+    border-width: 0 0 1px 0;
+    border-bottom:1px solid #090c16;
+}
+.pure-table-horizontal tbody > tr:last-child td {
+    border-bottom-width: 0;
+}

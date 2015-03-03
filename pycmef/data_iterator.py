@@ -18,7 +18,7 @@ class DataIterator:
     self.order = order
     self.dataset = dataset
     self.data_list = data
-    
+
     self.select_iterator(iterations)
 
   def data_to_json(self):
@@ -49,6 +49,7 @@ class DataIterator:
 
   def load_data(self):
     if not self.data_list:
+      print "No data list."
       return
 
     if self.sets == 1:
@@ -58,6 +59,7 @@ class DataIterator:
       self.current_data['index'] = index
       self.current_data['order'] = self.iterator.count()
       print "Order: %s" % self.iterator.count()
+      print "Index: %s" % index
     else:
       indexes = [self.iterator.next() for i in range(self.sets)]
       self.current_data = [self.data_list[idx] for idx in indexes]
@@ -65,6 +67,9 @@ class DataIterator:
       for idx in len(indexes):
         self.current_data[idx]['index'] = indexes[idx]
         self.current_data[idx]['order'] = self.iterator.count() + idx
+
+        print "Order(%s): %s" % (idx, self.iterator.count() + idx)
+        print "Index(%s): %s" % (idx, indexes[idx])
 
   def select_iterator(self, iterations):
     self.iterator = None

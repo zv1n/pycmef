@@ -5,7 +5,6 @@ import sys, json, os
 from pycmef.data_iterator import DataIterator
 
 class DataIterationMixin:
-
   def data_to_json(self):
     try:
       if isinstance(self.selected_data, dict):
@@ -36,8 +35,10 @@ class DataIterationMixin:
 
   def next(self):
     self.iteration += 1
+    print "Next (%s of %s)" % (self.iteration, self.iterations)
 
     if self.selected_data is None:
+      print "Selected data is none."
       return False
 
     if isinstance(self.selected_data, dict):
@@ -48,6 +49,7 @@ class DataIterationMixin:
 
   def should_repeat(self):
     print "MAX: %s CUR: %s" % (self.iterations, self.iteration)
+    print "Iterators Done: %s" % self.data_iterators_done()
     return (self.iterations > self.iteration) and (not self.data_iterators_done())
 
   def data_iterators_done(self):
@@ -58,6 +60,8 @@ class DataIterationMixin:
         done = done or self.selected_data[key].done()
 
       return done
+    elif self.selected_data is None:
+      return False
     else:
       return self.selected_data.done()
 
@@ -86,12 +90,13 @@ class DataIterationMixin:
                         data = contents)
 
   def create_from_multiple_datasets(self, sub_data):
-    self.selected_data = dict()
+    datas = dict()
 
     for key in sub_data:
       data_dict = sub_data[key]
+      datas[key] = self.create_from_single_dataset(data_dict)
 
-      self.selected_data[key] = self.create_from_single_dataset(data_dict)
+    return datas
 
   def set_default_iterations(self, contents):
     if self.iterations is None:
@@ -102,7 +107,7 @@ class DataIterationMixin:
       self.iterations = 1
 
   def configure(self):
-    self.iteration = -1
+    self.iteration = 0
     self.iterations = self.get_iteration_count(self.sub_data)
 
     data = self.get_data(self.sub_data)
@@ -111,5 +116,10 @@ class DataIterationMixin:
       self.selected_data = self.create_from_single_dataset(self.sub_data)
     elif isinstance(data, dict):
       self.selected_data = self.create_from_multiple_datasets(data)
+    else:
+      self.set_default_iterations(None)
+      self.selected_data = None
+
+    print "Configured: %s:%s (%s of %s)" % (self.parent.name, self.name, self.iteration, self.iterations)
 
 
