@@ -11,7 +11,7 @@ class DataIterator:
     RandomGroup
   ]
 
-  def __init__(self, sub, sets = None, iterations = None, order = None,
+  def __init__(self, sub, sets = 1, iterations = 1, order = None,
                dataset = None, data = None ):
     self.subsection = sub
     self.sets = sets
@@ -19,7 +19,7 @@ class DataIterator:
     self.dataset = dataset
     self.data_list = data
 
-    self.select_iterator(iterations)
+    self.select_iterator(iterations, sets)
 
   def data_to_json(self):
     try:
@@ -64,14 +64,14 @@ class DataIterator:
       indexes = [self.iterator.next() for i in range(self.sets)]
       self.current_data = [self.data_list[idx] for idx in indexes]
 
-      for idx in len(indexes):
+      for idx in indexes:
         self.current_data[idx]['index'] = indexes[idx]
         self.current_data[idx]['order'] = self.iterator.count() + idx
 
         print "Order(%s): %s" % (idx, self.iterator.count() + idx)
         print "Index(%s): %s" % (idx, indexes[idx])
 
-  def select_iterator(self, iterations):
+  def select_iterator(self, iterations, sets):
     self.iterator = None
 
     for iterator in DataIterator.iterators:
@@ -85,4 +85,4 @@ class DataIterator:
       self.iterator = SequentialIterator(self.order)
 
     self.data_len = len(self.data_list)
-    self.iterator.set_range(0, iterations)
+    self.iterator.set_range(0, iterations * sets)
