@@ -5,27 +5,32 @@
   Timer = (function() {
 
     function Timer(name, duration) {
-      var _this = this;
       this.name = name;
       this.duration = duration;
       this.current = 0;
-      this.init_dom();
+      this.running = false;
+      this.dom = $("#" + this.name + ".timer");
+    }
+
+    Timer.prototype.run_timer = function() {
+      var _this = this;
+      this.running = true;
       setTimeout(function() {
         return cmef.handle_event_response("timer:" + _this.name, {});
       }, this.duration);
-    }
-
-    Timer.prototype.init_dom = function() {
-      this.dom = $("#" + this.name + ".timer");
-      if (!(this.dom.length > 0)) {
-        return;
-      }
       return this.update_display();
+    };
+
+    Timer.prototype.is_running = function() {
+      return this.running;
     };
 
     Timer.prototype.update_display = function() {
       var delta, timeout,
         _this = this;
+      if (!(this.dom.length > 0)) {
+        return;
+      }
       timeout = 1000;
       delta = this.duration - this.current;
       if (delta < 1000) {
@@ -468,7 +473,16 @@
     };
 
     CMEF.prototype.timer = function(event, cb) {
-      return this.add_event_callback("timer:" + event, cb);
+      var timer, _i, _len, _ref;
+      this.add_event_callback("timer:" + event, cb);
+      _ref = this.timers;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        timer = _ref[_i];
+        if (event === timer.name && !timer.is_running()) {
+          timer.run_timer();
+        }
+      }
+      return true;
     };
 
     CMEF.prototype.emit = function(event, cb_or_args, cb) {

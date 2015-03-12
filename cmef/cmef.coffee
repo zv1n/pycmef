@@ -1,19 +1,23 @@
 class Timer
   constructor: (@name, @duration) ->
     @current = 0
-    @init_dom()
+    @running = false
+    @dom = $("##{@name}.timer")
 
+  run_timer: ->
+    @running = true
     setTimeout(=>
       cmef.handle_event_response("timer:#{@name}", {})
     , @duration)
 
-  init_dom: ->
-    @dom = $("##{@name}.timer")
-    return unless @dom.length > 0
-
     @update_display()
 
+  is_running: ->
+    @running
+
   update_display: ->
+    return unless @dom.length > 0
+
     timeout = 1000
     delta = @duration - @current
     if delta < 1000
@@ -25,7 +29,6 @@ class Timer
     , timeout)
 
     @dom.html(Math.floor(delta/1000))
-
 
 
 
@@ -372,6 +375,12 @@ class CMEF
 
   timer: (event, cb) ->
     @add_event_callback("timer:#{event}", cb)
+
+    for timer in @timers
+      if event == timer.name && !timer.is_running()
+        timer.run_timer()
+
+    true
 
   emit: (event, cb_or_args, cb) ->
     if cb_or_args instanceof Function
