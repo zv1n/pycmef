@@ -43,6 +43,9 @@ class RandomIterator(Iterator):
     except IndexError:
       return None
 
+  def count(self):
+    return len(self.range)
+
   @staticmethod
   def type():
     return 'random:dependent'

@@ -54,3 +54,5 @@ docs/_build/
 target/
 
 testoutput/**
+test_experiments/sets/cmef/**
+test_experiments/multidata/cmef/**

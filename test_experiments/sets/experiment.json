@@ -1,0 +1,111 @@
+{
+  "experiment": "Sets Test",
+  "sections": [
+    {
+      "name": "test_1",
+      "subsections": [
+        {
+          "name": "test_1",
+          "iterations": 1,
+          "data": {
+            "test_1": {
+              "order": "random:dependent",
+              "sets": 3,
+              "data": "test_1"
+            },
+            "test_2": {
+              "order": "random:dependent",
+              "sets": 3,
+              "data": "test_2"
+            }
+          }
+        },
+        {
+          "name": "test_2",
+          "iterations": 3,
+          "order": "random:dependent",
+          "sets": 10,
+          "data": "test_1",
+          "timers": {
+            "study-end": "50000"
+          }
+        },
+        "conclusion"
+      ]
+    }
+  ],
+  "data": {
+    "test_1": [
+      {
+        "first": 1
+      }, {
+        "first": 2
+      }, {
+        "first": 3
+      }, {
+        "first": 4
+      }, {
+        "first": 5
+      }, {
+        "first": 6
+      }, {
+        "first": 7
+      }, {
+        "first": 8
+      }, {
+        "first": 9
+      }, {
+        "first": 10
+      }, {
+        "first": 11
+      }, {
+        "first": 12
+      }, {
+        "first": 13
+      }, {
+        "first": 14
+      }, {
+        "first": 15
+      }, {
+        "first": 16
+      }, {
+        "first": 17
+      }, {
+        "first": 18
+      }, {
+        "first": 19
+      }, {
+        "first": 20
+      }, {
+        "first": 21
+      }, {
+        "first": 22
+      }, {
+        "first": 23
+      }, {
+        "first": 24
+      }, {
+        "first": 25
+      }, {
+        "first": 26
+      }, {
+        "first": 27
+      }, {
+        "first": 28
+      }, {
+        "first": 29
+      }, {
+        "first": 30
+      }
+    ],
+    "test_2": [
+      {
+        "text": 4
+      }, {
+        "text": 5
+      }, {
+        "text": 6
+      }
+    ]
+  }
+}

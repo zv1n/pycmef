@@ -60,11 +60,12 @@ class DataIterator:
       self.current_data['order'] = self.iterator.count()
       print "Order: %s" % self.iterator.count()
       print "Index: %s" % index
+
     else:
       indexes = [self.iterator.next() for i in range(self.sets)]
       self.current_data = [self.data_list[idx] for idx in indexes]
 
-      for idx in indexes:
+      for idx in range(len(indexes)):
         self.current_data[idx]['index'] = indexes[idx]
         self.current_data[idx]['order'] = self.iterator.count() + idx
 
@@ -85,4 +86,6 @@ class DataIterator:
       self.iterator = SequentialIterator(self.order)
 
     self.data_len = len(self.data_list)
+    print iterations
+    print sets
     self.iterator.set_range(0, iterations * sets)
