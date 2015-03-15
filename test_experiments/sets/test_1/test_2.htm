@@ -11,15 +11,21 @@
             $('').removeClass('pure-button-disabled').attr('disabled', false);
           });
 
-          var row = 2,
+          var row = 6,
               col = 5;
 
           var container = $('.pure-g.datagrid');
           for (var x = 0; x < row; x++) {
             for (var y = 0; y < col; y++) {
               var value = cmef.current[x*col + y].first;
+              var value2 = cmef.current[x*col + y].first;
+
               var middle = $('<div>').addClass('middle').html(value);
               var selection = $('<div>').addClass('selection').html(middle);
+
+                selection.data('first', value);
+                selection.data('second', value2);
+
               var div = $('<div>').addClass('pure-u-1-5').html(selection);
               container.append(div);
             }
@@ -33,7 +39,14 @@
             $('#grid').hide();
             $('#study').show();
             $('.close-button').show();
+
             $(event.currentTarget).addClass('previously-selected');
+
+            var first = $(this).data('first');
+            $('#study #first').html(first);
+
+            var second = $(this).data('second');
+            $('#study #second').html(second);
 
             if (!timer_started) {
               // cmef.mark('');
@@ -60,11 +73,12 @@
   </head>
   <body>
     <div id="study">
-      <div class="pure-g">
-          <div data-attribute= "class" data-value="{{data.first}}" >
-            <span data-content data-value="{{data.first}}"></span>
-            <span data-content data-value="{{data.first}}"></span>
-          </div>
+      <div class="pure-g text-middle">
+        <div class="pure-u-1-5"></div>
+        <div class="pure-u-1-5 text-center" id="first">first</div>
+        <div class="pure-u-1-5"></div>
+        <div class="pure-u-1-5 text-center" id="second">second</div>
+        <div class="pure-u-1-5"></div>
       </div>
     </div>
     <div id="grid" style="display: none;" class="text-middle">

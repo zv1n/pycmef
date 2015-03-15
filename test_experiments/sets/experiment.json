@@ -22,9 +22,9 @@
         },
         {
           "name": "test_2",
-          "iterations": 3,
+          "iterations": 1,
           "order": "random:dependent",
-          "sets": 10,
+          "sets": 30,
           "data": "test_1",
           "timers": {
             "study-end": "50000"

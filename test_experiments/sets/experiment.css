@@ -20,17 +20,21 @@
   padding-top: 30px;
 }
 
+.pure-g.text-middle {
+  margin-top: 100px;
+}
+
 .datagrid .pure-u-1-5 .selection {
   cursor: pointer;
   border: 1px solid black;
-  min-height: 120px;
+  min-height: 90px;
   margin: 10px;
 
   text-align: center;
 }
 
 .datagrid .pure-u-1-5 .selection .middle {
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 .datagrid .pure-u-1-5 .selection.previously-selected {
