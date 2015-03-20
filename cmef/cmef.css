@@ -81,7 +81,7 @@ footer.cmef-buttons-inverse {
 }
 
 footer .pure-button {
-  margin: 10px;
+  margin: 5px;
 }
 
 p#participant {
@@ -212,4 +212,49 @@ striping:
 }
 .pure-table-horizontal tbody > tr:last-child td {
     border-bottom-width: 0;
+}
+
+/* Allow for selectable data grids. */
+.datagrid .pure-u-1-5 .selection {
+  cursor: pointer;
+  border: 1px solid black;
+  min-height: 150px;
+  margin: 10px;
+
+  text-align: center;
+}
+
+.datagrid .pure-u-1-5 .selection .middle {
+  margin-top: 30px;
+}
+
+.datagrid .pure-u-1-5 .selection.previously-selected {
+  border-color: red;
+}
+
+.close-button {
+  display: none;
+  float: right;
+  margin: 3px;
+
+  font-family: 'sans-serif';
+  font-size: 18px;
+}
+
+footer.cmef-buttons.timer-container {
+  text-align: left;
+}
+
+.cmef-buttons .timer {
+  display: inline-block;
+  background-color: white;
+  border: 1px solid black;
+  width: 80px;
+  height: 36px;
+  margin: 4px;
+  padding: 2px;
+  float: center;
+  text-align: center;
+  /*padding: 10px;*/
+  font-size: 30pt;
 }

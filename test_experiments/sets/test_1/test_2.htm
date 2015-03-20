@@ -6,69 +6,80 @@
     <link rel="stylesheet" type="text/css" href="../experiment.css">
     <title></title>
     <script>
-        cmef.ready(function() {
-          $("[name='']").on('click', function() {
-            $('').removeClass('pure-button-disabled').attr('disabled', false);
-          });
+      cmef.ready(function() {
+        $("[name='']").on('click', function() {
+          $('').removeClass('pure-button-disabled').attr('disabled', false);
+        });
 
-          var row = 6,
-              col = 5;
-
-          var container = $('.pure-g.datagrid');
-          for (var x = 0; x < row; x++) {
-            for (var y = 0; y < col; y++) {
-              var value = cmef.current[x*col + y].first;
-              var value2 = cmef.current[x*col + y].first;
-
-              var middle = $('<div>').addClass('middle').html(value);
-              var selection = $('<div>').addClass('selection').html(middle);
-
-                selection.data('first', value);
-                selection.data('second', value2);
-
-              var div = $('<div>').addClass('pure-u-1-5').html(selection);
-              container.append(div);
-            }
-          }
-
-          var timer_started = false;
-          $('#grid').show();
-          $('#study').hide();
-
-          $('.selection').on('click', function(event) {
-            $('#grid').hide();
-            $('#study').show();
-            $('.close-button').show();
-
-            $(event.currentTarget).addClass('previously-selected');
-
-            var first = $(this).data('first');
-            $('#study #first').html(first);
-
-            var second = $(this).data('second');
-            $('#study #second').html(second);
-
-            if (!timer_started) {
-              // cmef.mark('');
-              cmef.timer('study-end', function() {
-                $('#grid').hide();
-                $('#study').hide();
-                $('.close-button').hide();
-
-                $('.timer-container').hide();
-                $('#next-footer').show();
-              });
-
-              timer_started = true;
-            }
-          });
-
-          $('.close-button').on('click', function(event) {
+        var show_grid = function (show) {
+          if (show) {
             $('#grid').show();
             $('#study').hide();
             $('.close-button').hide();
-          });
+          } else {
+            $('#grid').hide();
+            $('#study').show();
+            $('.close-button').show();
+          }
+        };
+
+        var end_study = function () {
+          show_grid(true);
+          $('#grid').hide();
+          show_timer(false);
+          show_next_button(true);
+        };
+
+        var show_timer = function (show) {
+          if (show)
+            $('.timer-container').show();
+          else
+            $('.timer-container').hide();
+        };
+
+        var show_next_buttons = function (show) {
+          if (show)
+            $('#next-footer').show();
+          else
+            $('#next-footer').hide();
+        };
+
+        var timer_started = false;
+        var grid = new DataGrid('.pure-g.datagrid', 5, 6, function (data) {
+          var value = data.first;
+          var value2 = data.first;
+
+          var middle = $('<div>').addClass('middle').html(value);
+          var selection = $('<div>').addClass('selection').html(middle);
+
+          selection.data('first', value);
+          selection.data('second', value2);
+
+          return $('<div>').addClass('pure-u-1-5').html(selection);
         });
+
+        show_grid(true);
+
+        $('.selection').on('click', function(event) {
+          show_grid(false);
+          $(event.currentTarget).addClass('previously-selected');
+
+          var first = $(this).data('first');
+          $('#study #first').html(first);
+
+          var second = $(this).data('second');
+          $('#study #second').html(second);
+
+          if (!timer_started) {
+            cmef.timer('study-end', end_study);
+            timer_started = true;
+          }
+        });
+
+        $('.close-button').on('click', function(event) {
+          show_grid(true);
+        });
+      });
     </script>
   </head>
   <body>

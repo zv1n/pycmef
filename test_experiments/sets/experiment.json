@@ -25,6 +25,7 @@
           "iterations": 1,
           "order": "random:dependent",
           "sets": 30,
+          "columns": 5,
           "data": "test_1",
           "timers": {
             "study-end": "50000"

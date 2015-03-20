@@ -4,31 +4,46 @@ class Timer
     @running = false
     @dom = $("##{@name}.timer")
 
+    @update_display(false)
+
   run_timer: ->
     @running = true
     setTimeout(=>
       cmef.handle_event_response("timer:#{@name}", {})
     , @duration)
 
-    @update_display()
+    @update_display(true)
 
   is_running: ->
     @running
 
-  update_display: ->
+  update_display: (schedule) ->
     return unless @dom.length > 0
 
-    timeout = 1000
-    delta = @duration - @current
-    if delta < 1000
-      timeout = delta
+    @delta = @duration - @current
+    @schedule_update(1000) if schedule
+
+    @dom.html(Math.floor(@delta/1000))
+
+  schedule_update: (timeout) ->
+    if @delta < timeout
+      timeout = @delta
 
     setTimeout(=>
       @current += timeout
-      @update_display()
+      @update_display(true)
     , timeout)
 
-    @dom.html(Math.floor(delta/1000))
+
+class window.DataGrid
+  constructor: (@selector, @rows, @cols, @callback) ->
+    @container = $(@selector)
+    @populate_grid()
+
+  populate_grid: ->
+    for x in [0...@rows]
+      for y in [0...@cols]
+        @container.append(@callback(cmef.current[x*@cols + y]))
 
 
 
@@ -406,7 +421,7 @@ class CMEF
         return Math.floor(Math.random() * (max - min)) + min
 
       data = {}
-      
+
       if context and typeof context is "object"
         keys = undefined
 
@@ -442,12 +457,12 @@ window.on_python_ready = ->
       script = document.createElement("script")
       script.type = "text/javascript"
       script.src = path
-      
+
       # Then bind the event to the callback function.
       # There are several events for cross browser compatibility.
       script.onreadystatechange = callback
       script.onload = callback
-      
+
       # Fire the loading
       head.appendChild script
       return

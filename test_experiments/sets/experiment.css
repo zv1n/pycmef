@@ -24,23 +24,6 @@
   margin-top: 100px;
 }
 
-.datagrid .pure-u-1-5 .selection {
-  cursor: pointer;
-  border: 1px solid black;
-  min-height: 90px;
-  margin: 10px;
-
-  text-align: center;
-}
-
-.datagrid .pure-u-1-5 .selection .middle {
-  margin-top: 30px;
-}
-
-.datagrid .pure-u-1-5 .selection.previously-selected {
-  border-color: red;
-}
-
 #study {
   display: none;
 }
@@ -55,31 +38,4 @@
 
 #jol {
   margin-top: 200px;
-}
-
-.close-button {
-  display: none;
-  float: right;
-  margin: 5px;
-
-  font-family: 'sans-serif';
-  font-size: 18px;
-}
-
-footer.cmef-buttons.timer-container {
-  text-align: center;
-}
-
-.cmef-buttons .timer {
-  display: inline-block;
-  background-color: white;
-  border: 1px solid black;
-  width: 80px;
-  height: 36px;
-  margin: 5px;
-  padding: 2px;
-  margin-left: auto;
-  margin-right: auto;
-  /*padding: 10px;*/
-  font-size: 30pt;
 }
