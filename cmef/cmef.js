@@ -57,6 +57,7 @@
     function DataGrid(selector) {
       this.selector = selector;
       this.container = $(this.selector);
+      this;
     }
 
     DataGrid.prototype.render = function(ts) {
@@ -80,17 +81,19 @@
         data = _ref[_i];
         _fn(data);
       }
-      return this.init_selectors();
+      this.init_selectors();
+      return this;
     };
 
     DataGrid.prototype.selectable = function(selection_cb) {
       this.selection_cb = selection_cb;
+      return this;
     };
 
     DataGrid.prototype.init_selectors = function() {
       var _this = this;
 
-      return $('.selection', this.container).off('.grid-manager').on('click.grid-manager', function(event) {
+      $('.selection', this.container).off('.grid-manager').on('click.grid-manager', function(event) {
         var data, selection;
 
         selection = $(event.currentTarget);
@@ -99,13 +102,15 @@
           return _this.selection_cb(selection, data);
         }
       });
+      return this;
     };
 
     DataGrid.prototype.template = function(ts) {
       if (ts) {
         this.template_selector = ts;
-        return this.template = $(this.template_selector);
+        this.template = $(this.template_selector);
       }
+      return this;
     };
 
     return DataGrid;
@@ -116,32 +121,32 @@
     function ViewManager() {
       this.views = arguments;
       this.generate_methods();
+      this;
     }
 
     ViewManager.prototype.generate_methods = function() {
       this.generate_just_show_methods();
       this.generate_show_methods();
-      return this.generate_template_methods();
+      this.generate_template_methods();
+      return this;
     };
 
     ViewManager.prototype.generate_just_show_methods = function() {
-      var body, view, _i, _len, _ref, _results;
+      var body, view, _i, _len, _ref;
 
       _ref = this.views;
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         view = _ref[_i];
         body = "if (param) {\n  $('." + view + "').show();\n} else {\n  $('." + view + "').hide();\n}";
-        _results.push(this.generate_method("just_show_" + view, body));
+        this.generate_method("just_show_" + view, body);
       }
-      return _results;
+      return this;
     };
 
     ViewManager.prototype.generate_show_methods = function() {
-      var show, showview, view, _i, _j, _len, _len1, _ref, _ref1, _results;
+      var show, showview, view, _i, _j, _len, _len1, _ref, _ref1;
 
       _ref = this.views;
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         view = _ref[_i];
         show = [];
@@ -154,29 +159,29 @@
           show.push("$('." + showview + "').hide();");
         }
         show.push("$('." + view + "').show();");
-        _results.push(this.generate_method("show_" + view, show.join('')));
+        this.generate_method("show_" + view, show.join(''));
       }
-      return _results;
+      return this;
     };
 
     ViewManager.prototype.generate_template_methods = function() {
-      var body, view, _i, _len, _ref, _results;
+      var body, view, _i, _len, _ref;
 
       _ref = this.views;
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         view = _ref[_i];
         body = "var container = $(\"." + view + "\");\ncmef.auto_populate_common(container, { data: param });\ncmef.auto_template(container, { data: param });";
-        _results.push(this.generate_method("refresh_" + view, body));
+        this.generate_method("refresh_" + view, body);
       }
-      return _results;
+      return this;
     };
 
     ViewManager.prototype.generate_method = function(name, contents) {
       var method;
 
       method = ["this." + name + " = function (param) {", contents, "}"].join('');
-      return eval(method);
+      eval(method);
+      return this;
     };
 
     return ViewManager;

@@ -38,6 +38,7 @@ class Timer
 class window.DataGrid
   constructor: (@selector) ->
     @container = $(@selector)
+    this
 
   render: (ts)->
     @template(ts)
@@ -50,8 +51,10 @@ class window.DataGrid
         sel.data('content', data)
         @container.append(grid)
     @init_selectors()
+    this
 
   selectable: (@selection_cb) ->
+    this
 
   init_selectors: ->
     $('.selection', @container).off('.grid-manager')
@@ -60,11 +63,13 @@ class window.DataGrid
       data = selection.data('content')
       @selection_cb(selection, data) if @selection_cb
     )
+    this
 
   template: (ts) ->
     if (ts)
       @template_selector = ts
       @template = $(@template_selector)
+    this
 
 
 # Manage multiple views on the same page.  Each can be controlled using
@@ -77,11 +82,13 @@ class window.ViewManager
   constructor: () ->
     @views = arguments
     @generate_methods()
+    this
 
   generate_methods: ->
     @generate_just_show_methods()
     @generate_show_methods()
     @generate_template_methods()
+    this
 
   generate_just_show_methods: ->
     for view in @views
@@ -94,6 +101,7 @@ class window.ViewManager
              """
 
       @generate_method("just_show_#{view}", body)
+    this
 
   generate_show_methods: ->
     for view in @views
@@ -105,6 +113,7 @@ class window.ViewManager
       show.push "$('.#{view}').show();"
 
       @generate_method("show_#{view}", show.join(''))
+    this
 
   generate_template_methods: ->
     for view in @views
@@ -115,6 +124,8 @@ class window.ViewManager
       """
       @generate_method("refresh_#{view}", body)
 
+    this
+
   generate_method: (name, contents) ->
     method = [
       "this.#{name} = function (param) {"
@@ -123,6 +134,7 @@ class window.ViewManager
     ].join('')
     # console.log("Generating method: ", method)
     eval(method)
+    this
 
 
 class Range

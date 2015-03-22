@@ -7,27 +7,35 @@
     <title></title>
     <script>
       cmef.ready(function() {
+        // Set each view as a separate viewable object using a view manager.
         var views = new ViewManager('grid', 'study', 'next');
-        var grid = new DataGrid('.pure-g.datagrid')
 
         var timer_started = false;
-        grid.selectable(function (selection, data) {
-          if (!timer_started) {
-            cmef.timer('study-end', function() { views.show_next() });
-            timer_started = true;
-          }
+        // Generate a grid layout with the current data set.
+        var grid = new DataGrid('.pure-g.datagrid')
+          // make each grid element selectable, and handle the selection event.
+          .selectable(function (selection, data) {
+            selection.addClass('previously-selected');
 
-          selection.addClass('previously-selected');
-          views.refresh_study(data);
-          views.show_study();
-        });
+            if (!timer_started) {
+              // When the timer event triggers, show the 'next' view.
+              cmef.timer('study-end', function() { views.show_next(); });
+              timer_started = true;
+            }
 
-        grid.render('#grid-template');
+            // Rerun the template of the study view with the specified data.
+            views.refresh_study(data);
+            // Show the study view, hide all others.
+            views.show_study();
+          })
 
-        $('.close-button').on('click', function(event) {
-          views.show_grid();
-        });
+          // Render the grid layout using the #grid-template below.
+          .render('#grid-template');
 
+        // When the close button is clicked, show the grid, hide all others.
+        $('.close-button').on('click', function(event) { views.show_grid(); });
+
+        // Start out showing the grid.
         views.show_grid();
       });
     </script>
