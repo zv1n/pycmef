@@ -36,15 +36,93 @@ class Timer
 
 
 class window.DataGrid
-  constructor: (@selector, @rows, @cols, @callback) ->
+  constructor: (@selector) ->
     @container = $(@selector)
-    @populate_grid()
 
-  populate_grid: ->
-    for x in [0...@rows]
-      for y in [0...@cols]
-        @container.append(@callback(cmef.current[x*@cols + y]))
+  render: (ts)->
+    @template(ts)
 
+    for data in cmef.current
+      do (data) =>
+        content = cmef.handlebars(@template, { data: data })
+        sel = $('<div>').addClass('selection').append(content)
+        grid = $('<div>').addClass('pure-u-1-5').append(sel)
+        sel.data('content', data)
+        @container.append(grid)
+    @init_selectors()
+
+  selectable: (@selection_cb) ->
+
+  init_selectors: ->
+    $('.selection', @container).off('.grid-manager')
+    .on('click.grid-manager', (event) =>
+      selection = $(event.currentTarget)
+      data = selection.data('content')
+      @selection_cb(selection, data) if @selection_cb
+    )
+
+  template: (ts) ->
+    if (ts)
+      @template_selector = ts
+      @template = $(@template_selector)
+
+
+# Manage multiple views on the same page.  Each can be controlled using
+# Generate methods for:
+#  show_[classname]()           -> show classname and hide all others
+#  just_show_[classname](bool)  -> show or hide this class name
+#  refresh_[classname](data)    -> refresh the container with the provided
+#                                  data object.
+class window.ViewManager
+  constructor: () ->
+    @views = arguments
+    @generate_methods()
+
+  generate_methods: ->
+    @generate_just_show_methods()
+    @generate_show_methods()
+    @generate_template_methods()
+
+  generate_just_show_methods: ->
+    for view in @views
+      body = """
+              if (param) {
+                $('.#{view}').show();
+              } else {
+                $('.#{view}').hide();
+              }
+             """
+
+      @generate_method("just_show_#{view}", body)
+
+  generate_show_methods: ->
+    for view in @views
+
+      show = []
+      for showview in @views
+        continue if showview == view
+        show.push "$('.#{showview}').hide();"
+      show.push "$('.#{view}').show();"
+
+      @generate_method("show_#{view}", show.join(''))
+
+  generate_template_methods: ->
+    for view in @views
+      body = """
+        var container = $(".#{view}");
+        cmef.auto_populate_common(container, { data: param });
+        cmef.auto_template(container, { data: param });
+      """
+      @generate_method("refresh_#{view}", body)
+
+  generate_method: (name, contents) ->
+    method = [
+      "this.#{name} = function (param) {"
+      contents,
+      "}"
+    ].join('')
+    # console.log("Generating method: ", method)
+    eval(method)
 
 
 class Range
@@ -167,15 +245,7 @@ class CMEF
 
     @default_methods()
 
-    @auto_populate('attribute', (target, value) ->
-      attr = target.data('attribute')
-      target.attr(attr, value)
-    )
-
-    @auto_populate('content', (target, value) ->
-      target.html(value)
-    )
-
+    @auto_populate_common()
     @auto_template()
     @auto_enable()
     @auto_input()
@@ -243,19 +313,36 @@ class CMEF
 
     return
 
-  auto_populate: (type, modifier) ->
-    for target in $("[data-#{type}]")
+  auto_populate: (type, modifier, container, data) ->
+    for target in $("[data-#{type}]", container)
       target = $(target)
       value = target.data('value')
       render = target.data('render')
+      data ||= @render_data()
 
       if (!render)
         render = Handlebars.compile(value)
         target.data('render', render)
 
-      @track_loadables modifier(target, render(@render_data()))
+      @track_loadables modifier(target, render(data))
 
     return
+
+  auto_populate_common: (container, data) ->
+    @auto_populate('attribute',
+      (target, value) ->
+        attr = target.data('attribute')
+        target.attr(attr, value)
+      ,
+      container, data
+    )
+
+    @auto_populate('content',
+      (target, value) ->
+        target.html(value)
+      ,
+      container, data
+    )
 
   render_data: ->
     {
@@ -264,8 +351,9 @@ class CMEF
       dataset: @dataset
     }
 
-  handlebars: ($target) ->
-    html = Handlebars.compile($target.html())(@render_data())
+  handlebars: ($target, data) ->
+    data ||= @render_data()
+    html = Handlebars.compile($target.html())(data)
 
     rendered = $(html)
     @track_loadables rendered
@@ -274,11 +362,11 @@ class CMEF
   handlebars_value: (value) ->
     Handlebars.compile(value)(@render_data())
 
-  auto_template: ->
-    for target in $("[type='text/x-handlebars-template']")
+  auto_template: (container, data) ->
+    for target in $("[type='text/x-handlebars-template']", container)
       $target = $(target)
-
-      rendered = @handlebars($target)
+      continue if $target.data('auto') == false
+      rendered = @handlebars($target, data)
       rendered.insertBefore($target)
     return
 

@@ -54,34 +54,132 @@
   })();
 
   window.DataGrid = (function() {
-    function DataGrid(selector, rows, cols, callback) {
+    function DataGrid(selector) {
       this.selector = selector;
-      this.rows = rows;
-      this.cols = cols;
-      this.callback = callback;
       this.container = $(this.selector);
-      this.populate_grid();
     }
 
-    DataGrid.prototype.populate_grid = function() {
-      var x, y, _i, _ref, _results;
+    DataGrid.prototype.render = function(ts) {
+      var data, _fn, _i, _len, _ref,
+        _this = this;
 
+      this.template(ts);
+      _ref = cmef.current;
+      _fn = function(data) {
+        var content, grid, sel;
+
+        content = cmef.handlebars(_this.template, {
+          data: data
+        });
+        sel = $('<div>').addClass('selection').append(content);
+        grid = $('<div>').addClass('pure-u-1-5').append(sel);
+        sel.data('content', data);
+        return _this.container.append(grid);
+      };
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        data = _ref[_i];
+        _fn(data);
+      }
+      return this.init_selectors();
+    };
+
+    DataGrid.prototype.selectable = function(selection_cb) {
+      this.selection_cb = selection_cb;
+    };
+
+    DataGrid.prototype.init_selectors = function() {
+      var _this = this;
+
+      return $('.selection', this.container).off('.grid-manager').on('click.grid-manager', function(event) {
+        var data, selection;
+
+        selection = $(event.currentTarget);
+        data = selection.data('content');
+        if (_this.selection_cb) {
+          return _this.selection_cb(selection, data);
+        }
+      });
+    };
+
+    DataGrid.prototype.template = function(ts) {
+      if (ts) {
+        this.template_selector = ts;
+        return this.template = $(this.template_selector);
+      }
+    };
+
+    return DataGrid;
+
+  })();
+
+  window.ViewManager = (function() {
+    function ViewManager() {
+      this.views = arguments;
+      this.generate_methods();
+    }
+
+    ViewManager.prototype.generate_methods = function() {
+      this.generate_just_show_methods();
+      this.generate_show_methods();
+      return this.generate_template_methods();
+    };
+
+    ViewManager.prototype.generate_just_show_methods = function() {
+      var body, view, _i, _len, _ref, _results;
+
+      _ref = this.views;
       _results = [];
-      for (x = _i = 0, _ref = this.rows; 0 <= _ref ? _i < _ref : _i > _ref; x = 0 <= _ref ? ++_i : --_i) {
-        _results.push((function() {
-          var _j, _ref1, _results1;
-
-          _results1 = [];
-          for (y = _j = 0, _ref1 = this.cols; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; y = 0 <= _ref1 ? ++_j : --_j) {
-            _results1.push(this.container.append(this.callback(cmef.current[x * this.cols + y])));
-          }
-          return _results1;
-        }).call(this));
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        view = _ref[_i];
+        body = "if (param) {\n  $('." + view + "').show();\n} else {\n  $('." + view + "').hide();\n}";
+        _results.push(this.generate_method("just_show_" + view, body));
       }
       return _results;
     };
 
-    return DataGrid;
+    ViewManager.prototype.generate_show_methods = function() {
+      var show, showview, view, _i, _j, _len, _len1, _ref, _ref1, _results;
+
+      _ref = this.views;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        view = _ref[_i];
+        show = [];
+        _ref1 = this.views;
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          showview = _ref1[_j];
+          if (showview === view) {
+            continue;
+          }
+          show.push("$('." + showview + "').hide();");
+        }
+        show.push("$('." + view + "').show();");
+        _results.push(this.generate_method("show_" + view, show.join('')));
+      }
+      return _results;
+    };
+
+    ViewManager.prototype.generate_template_methods = function() {
+      var body, view, _i, _len, _ref, _results;
+
+      _ref = this.views;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        view = _ref[_i];
+        body = "var container = $(\"." + view + "\");\ncmef.auto_populate_common(container, { data: param });\ncmef.auto_template(container, { data: param });";
+        _results.push(this.generate_method("refresh_" + view, body));
+      }
+      return _results;
+    };
+
+    ViewManager.prototype.generate_method = function(name, contents) {
+      var method;
+
+      method = ["this." + name + " = function (param) {", contents, "}"].join('');
+      return eval(method);
+    };
+
+    return ViewManager;
 
   })();
 
@@ -254,15 +352,7 @@
       this.init_handlebars();
       this.initialized = true;
       this.default_methods();
-      this.auto_populate('attribute', function(target, value) {
-        var attr;
-
-        attr = target.data('attribute');
-        return target.attr(attr, value);
-      });
-      this.auto_populate('content', function(target, value) {
-        return target.html(value);
-      });
+      this.auto_populate_common();
       this.auto_template();
       this.auto_enable();
       this.auto_input();
@@ -355,21 +445,34 @@
       }
     };
 
-    CMEF.prototype.auto_populate = function(type, modifier) {
+    CMEF.prototype.auto_populate = function(type, modifier, container, data) {
       var render, target, value, _i, _len, _ref;
 
-      _ref = $("[data-" + type + "]");
+      _ref = $("[data-" + type + "]", container);
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
         target = $(target);
         value = target.data('value');
         render = target.data('render');
+        data || (data = this.render_data());
         if (!render) {
           render = Handlebars.compile(value);
           target.data('render', render);
         }
-        this.track_loadables(modifier(target, render(this.render_data())));
+        this.track_loadables(modifier(target, render(data)));
       }
+    };
+
+    CMEF.prototype.auto_populate_common = function(container, data) {
+      this.auto_populate('attribute', function(target, value) {
+        var attr;
+
+        attr = target.data('attribute');
+        return target.attr(attr, value);
+      }, container, data);
+      return this.auto_populate('content', function(target, value) {
+        return target.html(value);
+      }, container, data);
     };
 
     CMEF.prototype.render_data = function() {
@@ -380,10 +483,11 @@
       };
     };
 
-    CMEF.prototype.handlebars = function($target) {
+    CMEF.prototype.handlebars = function($target, data) {
       var html, rendered;
 
-      html = Handlebars.compile($target.html())(this.render_data());
+      data || (data = this.render_data());
+      html = Handlebars.compile($target.html())(data);
       rendered = $(html);
       this.track_loadables(rendered);
       return rendered;
@@ -393,14 +497,17 @@
       return Handlebars.compile(value)(this.render_data());
     };
 
-    CMEF.prototype.auto_template = function() {
+    CMEF.prototype.auto_template = function(container, data) {
       var $target, rendered, target, _i, _len, _ref;
 
-      _ref = $("[type='text/x-handlebars-template']");
+      _ref = $("[type='text/x-handlebars-template']", container);
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         target = _ref[_i];
         $target = $(target);
-        rendered = this.handlebars($target);
+        if ($target.data('auto') === false) {
+          continue;
+        }
+        rendered = this.handlebars($target, data);
         rendered.insertBefore($target);
       }
     };

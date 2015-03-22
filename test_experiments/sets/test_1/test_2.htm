@@ -3,15 +3,58 @@
     <script src='../cmef/cmef.js' type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="../cmef/pure.css">
     <link rel="stylesheet" type="text/css" href="../cmef/cmef.css">
+    <link rel="stylesheet" type="text/css" href="../experiment.css">
     <title></title>
+    <script>
+      cmef.ready(function() {
+        var views = new ViewManager('grid', 'study', 'next');
+        var grid = new DataGrid('.pure-g.datagrid')
+
+        var timer_started = false;
+        grid.selectable(function (selection, data) {
+          if (!timer_started) {
+            cmef.timer('study-end', function() { views.show_next() });
+            timer_started = true;
+          }
+
+          selection.addClass('previously-selected');
+          views.refresh_study(data);
+          views.show_study();
+        });
+
+        grid.render('#grid-template');
+
+        $('.close-button').on('click', function(event) {
+          views.show_grid();
+        });
+
+        views.show_grid();
+      });
+    </script>
   </head>
-  <body class="center text-center text-middle inverse" style="font-size: 18px">
-    <div class="center-image">
-      <div>Test 2:</div>
-      <input type="text" name="recall"></input>
+  <body>
+    <div id="study" class="study">
+      <div class="pure-g text-middle">
+        <div class="pure-u-1-5"></div>
+        <div class="pure-u-1-5 text-center" data-content data-value="{{data.first}}"></div>
+        <div class="pure-u-1-5"></div>
+        <div class="pure-u-1-5 text-center" data-content data-value="{{data.second}}"></div>
+        <div class="pure-u-1-5"></div>
+      </div>
     </div>
-    <footer class="cmef-buttons-inverse">
+    <div id="grid" class="grid" style="display: none;" class="text-middle">
+      <div class="pure-g datagrid"></div>
+      <script id="grid-template" type="text/x-handlebars-template" data-auto=false>
+        <div class="middle">{{data.first}}</div>
+      </script>
+    </div>
+    <footer class="cmef-buttons timer-container study grid">
+      <div class="timer" id="study-end"></div>
+      <input type="button" id="close" value="Close" class="pure-button close-button study">
+    </footer>
+    <footer class="cmef-buttons next">
       <input type="button" id="next" value="Continue" class="pure-button" data-default="true">
     </footer>
   </body>
+
 </html>
