@@ -74,6 +74,22 @@ class Match
     true
 
 
+class MatchAny
+  constructor: (@validator, @name, @value) ->
+
+  is_valid: (val) ->
+    for data in cmef.dataset
+      value = Handlebars.compile("{{#{@value}}}")({ data: data })
+      valid = (val.substring(0,3) == value.substring(0,3))
+
+      if valid
+        cmef.responses.data = data
+        @validator.valid(@name, valid)
+        return true
+
+    @validator.valid(@name, false)
+    return true
+
 
 
 class Validator
@@ -84,7 +100,10 @@ class Validator
       do (name) =>
         dom = $("[name='#{name}']")
         constraint = @constraints[name]
-        value = cmef.handlebars_value(constraint.value)
+        value = undefined
+
+        if 'value' of constraint
+          value = cmef.handlebars_value(constraint.value)
 
         comparison = @comparator(name, constraint.type, value)
         dom.data('validator', comparison)
@@ -113,6 +132,7 @@ class Validator
     switch type
       when 'range' then return new Range(this, name, value)
       when 'match' then return new Match(this, name, value)
+      when 'match-any' then return new MatchAny(this, name, value)
       else return undefined
 
   valid: (name, val) ->
@@ -314,7 +334,9 @@ class CMEF
   collect_response: ->
     res = @responses
     res.times = @times
-    res.data = @current
+
+    unless 'data' of res
+      res.data = @current
 
     for sel in @iselectors
       for target in $(sel)

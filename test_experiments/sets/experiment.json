@@ -22,10 +22,20 @@
         },
         {
           "name": "test_2",
+          "iterations": 30,
+          "data": "test_1",
+          "constraints": {
+            "recall": {
+              "type": "match-any",
+              "value": "data.first"
+            }
+          }
+        },
+        {
+          "name": "test_3",
           "iterations": 1,
           "order": "random:dependent",
           "sets": 30,
-          "columns": 5,
           "data": "test_1",
           "timers": {
             "study-end": "50000"
