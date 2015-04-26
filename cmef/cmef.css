@@ -214,6 +214,10 @@ striping:
     border-bottom-width: 0;
 }
 
+.datagrid {
+  padding: 100px;
+}
+
 /* Allow for selectable data grids. */
 .datagrid .pure-u-1-5 .selection {
   cursor: pointer;
@@ -231,6 +235,25 @@ striping:
 .datagrid .pure-u-1-5 .selection.previously-selected {
   border-color: red;
 }
+
+/* Allow for selectable data grids. */
+.datagrid .pure-u-4-24 .selection {
+  cursor: pointer;
+  border: 1px solid black;
+  min-height: 70px;
+  margin: 10px;
+
+  text-align: center;
+}
+
+.datagrid .pure-u-4-24 .selection .middle {
+  margin-top: 20px;
+}
+
+.datagrid .pure-u-4-24 .selection.previously-selected {
+  border-color: red;
+}
+
 
 .close-button {
   display: none;

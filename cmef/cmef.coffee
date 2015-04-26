@@ -36,20 +36,28 @@ class Timer
 
 
 class window.DataGrid
-  constructor: (@selector) ->
+  constructor: (@selector, @data = undefined) ->
     @container = $(@selector)
-    this
+    @data ?= cmef.current
 
-  render: (ts)->
+  render: (ts, options, cb)->
     @template(ts)
+    @options = $.extend({
+      columns: 5
+    }, options)
 
-    for data in cmef.current
-      do (data) =>
+    klass = 'pure-u-1-5'
+    klass = 'pure-u-4-24' if @options.columns == 6
+
+    for data, idx in @data
+      do (data, idx) =>
+        data = cb(data, idx) if cb
         content = cmef.handlebars(@template, { data: data })
         sel = $('<div>').addClass('selection').append(content)
-        grid = $('<div>').addClass('pure-u-1-5').append(sel)
+        grid = $('<div>').addClass(klass).append(sel)
         sel.data('content', data)
         @container.append(grid)
+
     @init_selectors()
     this
 
