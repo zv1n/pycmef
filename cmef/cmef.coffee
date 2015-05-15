@@ -291,6 +291,7 @@ class CMEF
     @datasets = JSON.parse(_experiment.datasets || '{}')
     @subsection = JSON.parse(_experiment.subsection)
     @experiment = JSON.parse(_experiment.experiment)
+    @condition = _experiment.current_condition
 
     return
 

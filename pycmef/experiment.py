@@ -42,6 +42,7 @@ class Experiment(
     self.directory = os.path.dirname(file)
     self.debug = False
     self.started = False
+    self.condition = None
 
     ExperimentLoader(self)
     self.set_debug(self.debug)

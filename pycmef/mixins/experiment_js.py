@@ -54,6 +54,10 @@ class ExperimentJSMixin(QObject):
       return '{}'
     return self.current_subsection.to_json()
 
+  # Condition data field
+  def condition_json(self):
+    return str(self.condition)
+
   on_event_response = pyqtSignal(str, str)
 
   subsection = pyqtProperty(str, fget=subsection_json)
@@ -61,6 +65,7 @@ class ExperimentJSMixin(QObject):
   datasets = pyqtProperty(str, fget=datasets_json)
   dataset = pyqtProperty(str, fget=dataset_json)
   current = pyqtProperty(str, fget=data_json)
+  current_condition = pyqtProperty(str, fget=condition_json)
 
   def register_connectors(self):
     self.html_view().loadFinished.connect(self.on_load)

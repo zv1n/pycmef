@@ -387,6 +387,7 @@
       this.datasets = JSON.parse(_experiment.datasets || '{}');
       this.subsection = JSON.parse(_experiment.subsection);
       this.experiment = JSON.parse(_experiment.experiment);
+      this.condition = _experiment.current_condition;
     };
 
     CMEF.prototype.mark = function(name) {
