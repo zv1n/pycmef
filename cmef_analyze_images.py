@@ -8,6 +8,8 @@ __author__ = "Terry Meacham"
 # native
 import os
 
+from cmef_parser import load_experiment
+
 # custom
 from pygazeanalyser.smireader import read_smioutput, SMIModes
 from pygazeanalyser.gazeplotter import draw_fixations, draw_heatmap, draw_scanpath, draw_raw
@@ -32,23 +34,7 @@ def get_screencaps(exp, components):
 
   return flist
 
-
-def get_file_list(fle, components):
-  with open(fle, 'rb') as jsonfile:
-    exp = json.load(jsonfile)
-    files = []
-
-    for comp in components:
-      flist = get_screencaps(exp, comp.split('.'))
-      files.extend(flist)
-
-  return files
-
-def load_experiment(fle):
-  with open(fle, 'rb') as jsonfile:
-    return json.load(jsonfile)
-
-def get_file_list(exp, components):
+def generate_image_list(exp, components):
   files = []
 
   for comp in components:
@@ -124,6 +110,12 @@ def usage(msg = None):
   print "usage: cmef-analyze-images.py <image dir> <plot dir> <smi event file> <experiment> [section.subsection ...]"
   sys.exit(1)
 
+def fetch_and_process_images(exp, sections, eventfile, imgdir, plotdir):
+  # try:
+  part = exp['participant']
+  lst = generate_image_list(exp, sections)
+  process_images(lst, eventfile, part, imgdir, plotdir)
+
 def main(argv):
   if len(argv) < 6:
     usage("Invalid arguments.")
@@ -133,16 +125,10 @@ def main(argv):
   eventfile = argv[3]
   exp = load_experiment(argv[4])
   part = exp['participant']
+  sections = argv[5:]
 
-  # try:
-  lst = get_file_list(exp, argv[5:])
-  process_images(lst, eventfile, part, imgdir, plotdir)
+  fetch_and_process_images(exp, sections, eventfile, imgdir, plotdir)
 
-  # except Exception as exp:
-  #   print str(exp)
-  #   exit(1)
-  # except IndexError as exp:
-  #   raise exp
 
 if '__main__' == __name__:
   main(sys.argv)

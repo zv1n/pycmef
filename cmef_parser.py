@@ -12,6 +12,10 @@ def usage(error = None):
   print('usage: cmef-parser.py [-h] -c <config> -i <experiment output> -o <output file>')
   sys.exit(1)
 
+def load_experiment(fle):
+  with open(fle, 'rb') as jsonfile:
+    return json.load(jsonfile)
+
 class ConfigEngine:
   def __init__(self):
     self.experiment = None
