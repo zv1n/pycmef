@@ -30,10 +30,25 @@ class ConfigEngine:
   def generate_value(self, item):
     return item
 
+  def nested_list_key(self, key, itms):
+    res = []
+
+    for itm in itms:
+      kval = self.nested_key(key, itm)
+      res.append(kval)
+
+    return res
+
   def nested_key(self, key, itm):
     if type(itm) is dict:
       keys = key.split('.')
-      for key in keys:
+      for idx, key in enumerate(keys):
+        if key[-2:] == '[]':
+          itm = itm.get(key[:-2], None)
+          kstr = ".".join(keys[idx+1:])
+
+          return self.nested_list_key(kstr, itm)
+
         itm = itm.get(key, None)
 
         if type(itm) is dict:
@@ -141,11 +156,43 @@ class ConfigEngine:
           maxr = len(row)
     return maxr
 
+  def expanded_header(self, res):
+    hdr = self.header()
+    expand = [1] * len(hdr)
+
+    for idx, col_data in enumerate(res):
+      if type(col_data) is not list:
+        continue
+
+      for ent in col_data:
+        if type(ent) is not list:
+          continue
+
+        exp = expand[idx]
+        if len(ent) > exp:
+          expand[idx] = len(ent)
+
+    updated_hdr = []
+    for idx, cnt in enumerate(expand):
+      itm = hdr[idx]
+      if cnt > 0:
+        inject = []
+        for cnt in range(0, cnt):
+          inject.append(itm.replace("[]", "[%s]" % cnt))
+
+        updated_hdr.append(inject)
+      else:
+        updated_hdr.append(itm)
+
+    return ([item for sl in updated_hdr for item in sl], expand)
+
   def response(self):
     res = self.process_config(self.generate_response)
 
     rows = self.row_count(res)
     nres = []
+
+    hdr, expanded = self.expanded_header(res)
 
     """
       Currently, the response is in a list of columns...
@@ -154,18 +201,25 @@ class ConfigEngine:
     for idx in range(0, rows):
       crow = []
 
-      for row in res:
+      for idx, row in enumerate(res):
         if type(row) is unicode:
           crow.append(row)
         elif type(row) is list:
           if len(row) is 0:
             crow.append(None)
           else:
-            crow.append(row.pop(0))
+            erow = row.pop(0)
+            exp = expanded[idx]
+            for n in range(len(erow), exp):
+              erow.append(None)
+            crow.extend([itm for itm in erow])
 
       nres.append(crow)
 
-    return nres
+    hres = [hdr]
+
+    hres.extend(nres)
+    return hres
 
 
 def main(argv):
@@ -220,10 +274,7 @@ def generate_output_file(input_file, config_file, output_file):
   engine.config = config
   engine.experiment = experiment
 
-  headers = [engine.header()]
-  response = engine.response()
-
-  headers.extend(response)
+  headers = engine.response()
 
   outfile = open(output_file, 'wb')
   csv_write = csv.writer(outfile, dialect = 'excel')
