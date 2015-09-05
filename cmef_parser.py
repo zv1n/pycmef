@@ -210,9 +210,14 @@ class ConfigEngine:
           else:
             erow = row.pop(0)
             exp = expanded[idx]
+            if erow is None:
+              erow = []
             for n in range(len(erow), exp):
               erow.append(None)
-            crow.extend([itm for itm in erow])
+            if type(erow) is list:
+              crow.extend([itm for itm in erow])
+            else:
+              crow.append(erow)
 
       nres.append(crow)
 
@@ -221,14 +226,29 @@ class ConfigEngine:
     hres.extend(nres)
     return hres
 
+def transpose(lol):
+  if len(lol) == 0:
+    return []
+  rowlen = len(lol[0])
+  out = []
+
+  for i in range(rowlen):
+    for l in lol:
+      d = l[i]
+      if len(out) <= i:
+        out.append([d])
+      else:
+        out[i].append(d)
+
+  return out
 
 def main(argv):
   if (len(argv) <= 1):
     usage("Invalid number of arguments.")
 
   try:
-    long_form = ["help", "input=", "config=", "output="]
-    opts, args = getopt.getopt(argv[1:], "hi:o:c:", long_form)
+    long_form = ["help", "input=", "config=", "output=", "tranpose"]
+    opts, args = getopt.getopt(argv[1:], "hi:o:c:t", long_form)
   except getopt.GetoptError as err:
     usage("Invalid option: %s" % err)
     sys.exit(2)
@@ -236,6 +256,7 @@ def main(argv):
   input_file = None
   config_file = None
   output_file = None
+  trans = False
 
   for opt, arg in opts:
     if opt in ("-h", "--help"):
@@ -251,6 +272,9 @@ def main(argv):
     elif opt in ("-o", "--output="):
       output_file = arg
 
+    elif opt in ("-t", "--transpose"):
+      trans = True
+
   if input_file is None or config_file is None or output_file is None:
     usage("No input/config/output file specified.")
     sys.exit(1)
@@ -259,9 +283,9 @@ def main(argv):
     usage("Invalid input or configuration file path.")
     sys.exit(1)
 
-  generate_output_file(input_file, config_file, output_file)
+  generate_output_file(input_file, config_file, output_file, trans)
 
-def generate_output_file(input_file, config_file, output_file):
+def generate_output_file(input_file, config_file, output_file, trans):
   handle = open(input_file)
   experiment = json.load(handle)
   handle.close()
@@ -275,6 +299,9 @@ def generate_output_file(input_file, config_file, output_file):
   engine.experiment = experiment
 
   headers = engine.response()
+
+  if trans:
+    headers = transpose(headers)
 
   outfile = open(output_file, 'wb')
   csv_write = csv.writer(outfile, dialect = 'excel')
