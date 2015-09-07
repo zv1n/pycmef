@@ -86,6 +86,7 @@ class DataIterator:
       self.iterator = SequentialIterator(self.order)
 
     self.data_len = len(self.data_list)
-    print iterations
-    print sets
+    print "Iterations: %s" % iterations
+    print "Items per:  %s" % sets
+    print "Total items: %s" % (iterations * sets)
     self.iterator.set_range(0, iterations * sets)

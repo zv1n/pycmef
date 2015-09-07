@@ -156,8 +156,28 @@ class ConfigEngine:
           maxr = len(row)
     return maxr
 
-  def expanded_header(self, res):
+  def max_per_row(self, res):
+    exp = []
+    for row in res:
+      if type(row) is list:
+
+        for idx, item in enumerate(row):
+          if type(item) is list:
+
+            while len(exp) <= idx:
+              exp.append(len(item))
+
+            if exp[idx] < len(item):
+              exp[idx] = len(item)
+
+    return exp
+
+  def expanded_header(self, res, colmajor):
     hdr = self.header()
+
+    if colmajor:
+      return (hdr, self.max_per_row(res))
+
     expand = [1] * len(hdr)
 
     for idx, col_data in enumerate(res):
@@ -186,40 +206,63 @@ class ConfigEngine:
 
     return ([item for sl in updated_hdr for item in sl], expand)
 
-  def response(self):
+  def response(self, colmajor):
     res = self.process_config(self.generate_response)
 
     rows = self.row_count(res)
     nres = []
 
-    hdr, expanded = self.expanded_header(res)
+    hdr, expanded = self.expanded_header(res, colmajor)
 
     """
       Currently, the response is in a list of columns...
       CSV writer wants list of rows.
     """
-    for idx in range(0, rows):
+    for ridx in range(0, rows):
       crow = []
 
       for idx, row in enumerate(res):
         if type(row) is unicode:
           crow.append(row)
+
         elif type(row) is list:
+
           if len(row) is 0:
             crow.append(None)
           else:
             erow = row.pop(0)
-            exp = expanded[idx]
             if erow is None:
               erow = []
-            for n in range(len(erow), exp):
-              erow.append(None)
-            if type(erow) is list:
-              crow.extend([itm for itm in erow])
-            else:
-              crow.append(erow)
 
-      nres.append(crow)
+            if colmajor:
+              exp = expanded[ridx]
+
+              if type(erow) is list and not colmajor:
+                crow.extend([itm for itm in erow])
+              else:
+                crow.append(erow)
+            else:
+              exp = expanded[idx]
+
+              for n in range(len(erow), exp):
+                erow.append(None)
+
+              if type(erow) is list and not colmajor:
+                crow.extend([itm for itm in erow])
+              else:
+                crow.append(erow)
+
+      for n in range(exp):
+        if colmajor:
+          temp = crow[:]
+
+          for idx, row in enumerate(crow):
+            if type(row) is list:
+              temp[idx] = row[n]
+
+          nres.append(temp)
+        else:
+          nres.append(crow)
 
     hres = [hdr]
 
@@ -247,8 +290,8 @@ def main(argv):
     usage("Invalid number of arguments.")
 
   try:
-    long_form = ["help", "input=", "config=", "output=", "tranpose"]
-    opts, args = getopt.getopt(argv[1:], "hi:o:c:t", long_form)
+    long_form = ["help", "input=", "config=", "output=", "tranpose", "row-major"]
+    opts, args = getopt.getopt(argv[1:], "hi:o:c:tr", long_form)
   except getopt.GetoptError as err:
     usage("Invalid option: %s" % err)
     sys.exit(2)
@@ -257,6 +300,7 @@ def main(argv):
   config_file = None
   output_file = None
   trans = False
+  colmajor = True
 
   for opt, arg in opts:
     if opt in ("-h", "--help"):
@@ -275,6 +319,9 @@ def main(argv):
     elif opt in ("-t", "--transpose"):
       trans = True
 
+    elif opt in ("-r", "--row-major"):
+      colmajor = False
+
   if input_file is None or config_file is None or output_file is None:
     usage("No input/config/output file specified.")
     sys.exit(1)
@@ -283,9 +330,9 @@ def main(argv):
     usage("Invalid input or configuration file path.")
     sys.exit(1)
 
-  generate_output_file(input_file, config_file, output_file, trans)
+  generate_output_file(input_file, config_file, output_file, trans, colmajor)
 
-def generate_output_file(input_file, config_file, output_file, trans):
+def generate_output_file(input_file, config_file, output_file, trans, colmajor):
   handle = open(input_file)
   experiment = json.load(handle)
   handle.close()
@@ -298,7 +345,7 @@ def generate_output_file(input_file, config_file, output_file, trans):
   engine.config = config
   engine.experiment = experiment
 
-  headers = engine.response()
+  headers = engine.response(colmajor)
 
   if trans:
     headers = transpose(headers)

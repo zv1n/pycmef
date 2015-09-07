@@ -36,21 +36,24 @@ class ExperimentJSMixin(QObject):
   # Just this subsection data.
   def data_json(self):
     if self.current_subsection is None:
-      print 'Current Subsection is empty!'
+      if self.initialized:
+        print 'Current Subsection is empty!'
       return '{}'
     return self.current_subsection.data_to_json()
 
   # Just this subsection data.
   def dataset_json(self):
     if self.current_subsection is None:
-      print 'Current Subsection is empty!'
+      if self.initialized:
+        print 'Current Subsection is empty!'
       return '{}'
     return self.current_subsection.dataset_to_json()
 
   # Current data field
   def subsection_json(self):
     if self.current_subsection is None:
-      print 'Current Subsection is empty!'
+      if self.initialized:
+        print 'Current Subsection is empty!'
       return '{}'
     return self.current_subsection.to_json()
 

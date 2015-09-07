@@ -29,9 +29,16 @@ class RunnerMixin:
     self.add_core_response(args)
 
     self.data_dict.set_condition(self.condition)
+
+    """
+      This must occur after participant condition has been selected.
+      In loading data, a condition-based data segment (name:COND) is selected
+      first. If no data segment matching this exists, the name without
+      the condition appended is searched for.
+    """
+
     self.configure_sections()
 
-    self.current_subsection.next()
     self.load_page(self.current_subsection.path(self.directory))
     return 'success'
 
@@ -51,7 +58,6 @@ class RunnerMixin:
     if self.current_subsection is None:
       return self.load_conclusion()
 
-    # print "%s:%s" % (self.current_section.name, self.current_subsection.name)
     self.load_page(self.current_subsection.path(self.directory))
     return 'success'
 

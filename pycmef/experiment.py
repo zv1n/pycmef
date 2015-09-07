@@ -37,7 +37,10 @@ class Experiment(
 
   # Create init files for
   def __init__(self, file, output):
-    super(Experiment, self).__init__()
+    super(Experiment, self)         .__init__()
+
+    self.init_section_manager()
+
     self.file = file
     self.directory = os.path.dirname(file)
     self.debug = False
@@ -53,7 +56,7 @@ class Experiment(
     self.app = QApplication(sys.argv)
 
   def load_page(self, page):
-    # print "Loading page: %s" % page\
+    print "Loading page: %s" % page
     self.web.load(QUrl(QString(page)))
 
   def set_debug(self, debug):
