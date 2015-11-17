@@ -7,7 +7,12 @@ import csv
 import glob
 
 from cmef_parser import generate_output_file, load_experiment
-from cmef_analyze_images import fetch_and_process_images
+
+try:
+  from cmef_analyze_images import fetch_and_process_images
+  analyze = True
+except ImportError as e:
+  analyze = False
 
 from subprocess import call
 
@@ -16,9 +21,10 @@ def usage(error = None):
     print error
   print('output parser:')
   print('usage: cmef-parse-all.py -d <parser-files dir> -o <test output dir>\n')
-  print('image parser:')
-  print('usage: cmef-parse-all.py -s preferences.preferences[,performance.question[,...]] ')
-  print('                         -o <test output dir>')
+  if analyze:
+      print('image parser:')
+      print('usage: cmef-parse-all.py -s preferences.preferences[,performance.question[,...]] ')
+      print('                         -o <test output dir>')
   sys.exit(1)
 
 def fetch_json(dir, deep):
@@ -34,9 +40,12 @@ def run_parser(experiment, definition):
   output = os.path.join(outputdir, csv)
 
   print "Generating output: %s for %s" % (csv, experiment)
-  generate_output_file(experiment, definition, output)
+  generate_output_file(experiment, definition, output, False, True)
 
 def run_image_analysis(exp, sections, plot):
+  if not analyze:
+    print("Warning: Image support is currently not included!")
+    return
   expc = load_experiment(exp)
   outputdir = os.path.dirname(exp)
   plotdir = os.path.join(outputdir, plot)
@@ -87,12 +96,12 @@ def main(argv):
     sys.exit(1)
 
   if not os.path.isdir(out_dir):
-    usage()
+    usage("The requested output directory is NOT a valid directory.")
     sys.exit(1)
 
   if def_dir is not None:
     if not os.path.isdir(def_dir):
-      usage()
+      usage("Requested parser definitions directory is not valid.")
       sys.exit(1)
 
     definitions = fetch_json(def_dir, False)
@@ -107,7 +116,7 @@ def main(argv):
     if len(definitions) > 0:
       for parserdef in definitions:
         run_parser(exp, parserdef)
-    if len(subsections) > 0:
+    if len(subsections) > 0 and analyze:
       run_image_analysis(exp, subsections, plot_dir)
 
 if __name__ == '__main__':

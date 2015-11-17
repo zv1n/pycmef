@@ -1,0 +1,16 @@
+[
+  "participant",
+  "condition",
+  {
+    "trial_2": {
+      "study": [
+        "data.text_2[].first",
+        "data.text_2[].index",
+        "data.text_2[].order",
+        "data.text_2[].second",
+        "data.text_2[].third",
+		"data.raw_text"
+      ]
+    }
+  }
+]

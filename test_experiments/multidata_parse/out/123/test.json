@@ -1,0 +1,57 @@
+{
+  "participant": "123",
+  "condition": "A",
+  "trial_2": {
+    "study": [
+      {
+        "question": "Text 1",
+        "data": {
+		      "raw_text": "raw text 1",
+          "text_2": [
+            {
+              "first": "malkia", 
+              "index": 10, 
+              "order": 0, 
+              "second": "queen", 
+              "third": "easy"
+            }, 
+            {
+              "first": "duara", 
+              "index": 25, 
+              "order": 1, 
+              "second": "wheel", 
+              "third": "hard"
+            }
+          ]
+        }
+      },
+      {
+        "question": "Text 2",
+        "data": {
+		      "raw_text": "raw text 2",
+          "text_2": [
+            {
+              "first": "malkia", 
+              "index": 10, 
+              "order": 0, 
+              "second": "queen", 
+              "third": "easy"
+            },
+            {
+              "first": "duara", 
+              "index": 25, 
+              "order": 1, 
+              "second": "wheel", 
+              "third": "hard"
+            },
+            {
+              "first": "duara", 
+              "index": 25, 
+              "order": 1
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
