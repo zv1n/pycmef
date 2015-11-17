@@ -165,10 +165,18 @@ class ConfigEngine:
           if type(item) is list:
 
             while len(exp) <= idx:
-              exp.append(len(item))
+             exp.append(len(item))
 
             if exp[idx] < len(item):
               exp[idx] = len(item)
+
+          elif type(item) is str or type(item) is unicode:
+            while len(exp) <= idx:
+             exp.append(1)
+
+            if exp[idx] < 1:
+              exp[idx] = 1
+
 
     return exp
 
