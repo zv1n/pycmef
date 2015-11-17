@@ -170,7 +170,7 @@ class ConfigEngine:
             if exp[idx] < len(item):
               exp[idx] = len(item)
 
-          elif type(item) is str or type(item) is unicode:
+          elif type(item) is str or type(item) is unicode or item is None:
             while len(exp) <= idx:
              exp.append(1)
 
@@ -240,7 +240,7 @@ class ConfigEngine:
           else:
             erow = row.pop(0)
             if erow is None:
-              erow = []
+              erow = ''
 
             if colmajor:
               exp = expanded[ridx]
@@ -263,9 +263,8 @@ class ConfigEngine:
       for n in range(exp):
         if colmajor:
           temp = crow[:]
-
           for idx, row in enumerate(crow):
-            if type(row) is list:
+            if type(row) is list and len(row) > n:
               temp[idx] = row[n]
 
           nres.append(temp)
