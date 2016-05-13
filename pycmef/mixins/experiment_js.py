@@ -57,6 +57,14 @@ class ExperimentJSMixin(QObject):
       return '{}'
     return self.current_subsection.to_json()
 
+  # All current responses
+  def current_response_json(self):
+    if self.response is None:
+      if self.initialized:
+        print 'No responses yet!'
+      return '{}'
+    return json.dumps(self.response, indent=2, sort_keys=True)
+
   # Condition data field
   def condition_json(self):
     return str(self.condition)
@@ -68,6 +76,7 @@ class ExperimentJSMixin(QObject):
   datasets = pyqtProperty(str, fget=datasets_json)
   dataset = pyqtProperty(str, fget=dataset_json)
   current = pyqtProperty(str, fget=data_json)
+  results = pyqtProperty(str, fget=current_response_json)
   current_condition = pyqtProperty(str, fget=condition_json)
 
   def register_connectors(self):

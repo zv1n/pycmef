@@ -1,0 +1,15 @@
+[
+  "participant",
+  "condition",
+  {
+    "trial_1": {
+      "study": [
+        "first",
+        "data.index",
+        "data.order",
+        "second",
+        "third"
+      ]
+    }
+  }
+]

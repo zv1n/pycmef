@@ -220,8 +220,8 @@ class Validator
         dom.on 'keyup.validate', change
         dom.on 'data:modified.validate', change
         dom.on 'data:vis-change', change
-
         dom.addClass('validatable')
+
         dom.trigger('data:modified')
 
   all_valid: ->

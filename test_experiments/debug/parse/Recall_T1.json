@@ -1,0 +1,16 @@
+[
+  "participant",
+  "condition",
+  {
+    "trial_1": {
+	    "recall": [
+		    "data.first",
+		    "data.second",
+		    "data.index",
+		    "data.order",
+		    "recall",
+		    "recall_correct"
+	    ]
+		}
+  }
+]

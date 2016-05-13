@@ -1,0 +1,46 @@
+{
+  "experiment": "TestConstraints",
+  "fullscreen": true,
+  "conditions": ["A"],
+  "sections": [
+    {
+      "name":"trial_1",
+      "subsections": [
+        {
+          "name": "study_jol",
+          "iterations": 1,
+          "data": "text1",
+          "constraints": {
+            "Jol": {
+              "type": "range",
+              "value": "100"
+            },
+            "Jol2": {
+              "type": "range",
+              "value": "100"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "data": {
+    "text1": [
+      {
+        "first": "mountain"
+      },
+      {
+        "first": "limousine"
+      },
+      {
+        "first": "bicycle"
+      },
+      {
+        "first": "airport"
+      },
+      {
+        "first": "blanket"
+      }
+    ]
+  }
+}

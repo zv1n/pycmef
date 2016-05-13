@@ -1,0 +1,13 @@
+[
+  "participant",
+  "condition",
+  {
+    "trial_1": {
+      "JOL": [
+        "jol",
+        "data.index",
+        "data.order"
+      ]
+    }
+  }
+]
