@@ -1,38 +1,76 @@
-class Timer
+class window.Timer
   constructor: (@name, @duration) ->
-    @current = 0
     @running = false
-    @dom = $("##{@name}.timer")
 
-    @update_display(false)
+    @timer_dom = $("##{@name}.timer")
+    @bar_timer_dom = $("##{@name}.bar-timer")
 
-  run_timer: ->
+    if @bar_timer_dom.length > 0
+      @bar_delta = @bar_timer_dom.width() / @duration
+    else
+      @bar_delta = @duration
+
+    @update_displays(false)
+
+  epoch: ->
+    (new Date).getTime()
+
+  start: (cb) ->
+    cmef.add_event_callback("timer:#{@name}", cb) if (cb)
+    @epoch_duration = @duration + @epoch()
     @running = true
+
     setTimeout(=>
+      console.log("handle event!!")
       cmef.handle_event_response("timer:#{@name}", {})
     , @duration)
+    @update_displays(true)
 
-    @update_display(true)
+  update_displays: (schedule) ->
+    @update_timer(schedule)
+    @update_bar_timer(schedule)
+
+  run_timer: ->
+    @start()
 
   is_running: ->
     @running
 
-  update_display: (schedule) ->
-    return unless @dom.length > 0
+  update_timer: (schedule) ->
+    if @timer_dom.length > 0
+      @schedule_update(1000, @update_timer) if schedule
+      @timer_dom.html(Math.floor(@delta/1000))
 
-    @delta = @duration - @current
-    @schedule_update(1000) if schedule
+  update_bar_timer: (schedule) ->
+    if @bar_timer_dom.length > 0
+      @schedule_update(@bar_delta, @update_bar_timer) if schedule
+      if !@running
+        @bar_timer_dom.css("width", "100%")
+      else
+        percent = 100.0 * @delta / @duration
+        @bar_timer_dom.css("width", "#{percent}%")
 
-    @dom.html(Math.floor(@delta/1000))
+        if percent > 15.0 and percent <= 30.0
+          @bar_timer_dom.addClass('slow-pulse')
+        else
+          @bar_timer_dom.removeClass('slow-pulse')
 
-  schedule_update: (timeout) ->
+        if percent <= 15.0
+          @bar_timer_dom.addClass('fast-pulse')
+        else
+          @bar_timer_dom.removeClass('fast-pulse')
+
+  schedule_update: (timeout, cb) ->
     if @delta < timeout
       timeout = @delta
 
-    setTimeout(=>
-      @current += timeout
-      @update_display(true)
-    , timeout)
+    if timeout > 0
+      setTimeout(=>
+        @delta = @epoch_duration - @epoch()
+        cb.apply(this, [true])
+      , timeout)
+    else
+      @running = false
 
 
 class window.DataGrid
@@ -95,8 +133,16 @@ class window.ViewManager
       for klass in arguments
         @views[klass] = ".#{klass}"
 
+    @switch_hide_type()
     @generate_methods()
     this
+
+  switch_hide_type: ->
+    for name, selector of @views
+      sel = $(selector)
+      if sel.hasClass('hidden')
+        sel.hide()
+        sel.removeClass('hidden')
 
   generate_methods: ->
     @generate_just_show_methods()
@@ -163,7 +209,14 @@ class Range
     return (ival >= @low && ival <= @high)
 
 
+class MatchValue
+  constructor: (@validator, @name, @value) ->
 
+  is_valid: (val) ->
+    value = Handlebars.compile("{{#{@value}}}")({ data: cmef.current })
+    valid = (val.toString() == value.toString())
+    @validator.valid(@name, valid)
+    true
 
 class Match
   constructor: (@validator, @name, @value) ->
@@ -235,6 +288,7 @@ class Validator
       when 'range' then return new Range(this, name, value)
       when 'match' then return new Match(this, name, value)
       when 'match-any' then return new MatchAny(this, name, value)
+      when 'match-value' then return new MatchValue(this, name, value)
       else return undefined
 
   valid: (name, val) ->

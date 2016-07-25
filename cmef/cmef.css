@@ -285,3 +285,67 @@ footer.cmef-buttons.timer-container {
   /*padding: 10px;*/
   font-size: 30pt;
 }
+
+.short-mid {
+  margin-top: 350px;
+}
+
+.timer-container {
+  width: 100%;
+  height: 42px;
+  border: 1px solid grey;
+  border-left: 0px;
+  border-right: 0px;
+  padding: 0;
+  margin-top: 10px;
+  margin-bottom: 0px;
+}
+
+.center {
+  text-align: center;
+  align: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.container {
+  padding: 5px;
+  border: 1px solid grey;
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+.timer-container .bar-timer {
+  background-color: grey;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.fixed-bottom {
+  position: absolute;
+  bottom: 0px;
+  margin: 0px;
+  width: 100%;
+}
+
+.fast-pulse {
+  -webkit-animation: pulse 1s infinite;
+}
+
+.slow-pulse {
+  -webkit-animation: pulse 5s infinite;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    background-color: grey;
+  }
+  50% {
+    background-color: lightgrey;
+  }
+  100% {
+    background-color: grey;
+  }
+}
