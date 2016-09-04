@@ -501,6 +501,7 @@
       })(this));
       this.load_data();
       this.init_handlebars();
+      this.handle_event_response('data-ready', {});
       this.initialized = true;
       this.default_methods();
       this.auto_populate_common();
@@ -764,6 +765,10 @@
 
     CMEF.prototype.ready = function(cb) {
       return this.add_event_callback('ready', cb);
+    };
+
+    CMEF.prototype.data_ready = function(cb) {
+      return this.add_event_callback('data-ready', cb);
     };
 
     CMEF.prototype.load = function(cb) {

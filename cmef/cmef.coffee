@@ -318,6 +318,7 @@ class CMEF
 
     @load_data()
     @init_handlebars()
+    @handle_event_response('data-ready', {})
 
     @initialized = true
 
@@ -527,6 +528,9 @@ class CMEF
 
   ready: (cb) ->
     @add_event_callback('ready', cb)
+
+  data_ready: (cb) ->
+    @add_event_callback('data-ready', cb)
 
   load: (cb) ->
     @add_event_callback('load:complete', cb)
