@@ -7,6 +7,7 @@
       this.name = name1;
       this.duration = duration1;
       this.running = false;
+      this.delta = this.duration - 1000;
       this.timer_dom = $("#" + this.name + ".timer");
       this.bar_timer_dom = $("#" + this.name + ".bar-timer");
       if (this.bar_timer_dom.length > 0) {
@@ -25,11 +26,10 @@
       if (cb) {
         cmef.add_event_callback("timer:" + this.name, cb);
       }
-      this.epoch_duration = this.duration + this.epoch();
+      this.epoch_duration = parseInt(this.duration) + this.epoch();
       this.running = true;
       setTimeout((function(_this) {
         return function() {
-          console.log("handle event!!");
           return cmef.handle_event_response("timer:" + _this.name, {});
         };
       })(this), this.duration);
@@ -52,7 +52,7 @@
     Timer.prototype.update_timer = function(schedule) {
       if (this.timer_dom.length > 0) {
         if (schedule) {
-          this.schedule_update(1000, this.update_timer);
+          this.schedule_update(100, this.update_timer);
         }
         return this.timer_dom.html(Math.floor(this.delta / 1000));
       }
@@ -501,7 +501,7 @@
       })(this));
       this.load_data();
       this.init_handlebars();
-      this.handle_event_response('data-ready', {});
+      this.handle_event_response_sync('data-ready', {});
       this.initialized = true;
       this.default_methods();
       this.auto_populate_common();
@@ -810,6 +810,21 @@
         setTimeout(function() {
           return cb(response);
         }, 1);
+      }
+    };
+
+    CMEF.prototype.handle_event_response_sync = function(event, response) {
+      var cb, cbs, j, len;
+      if (this.events.hasOwnProperty(event)) {
+        cbs = this.events[event];
+      }
+      this.events[event] = [];
+      if (!cbs) {
+        return;
+      }
+      for (j = 0, len = cbs.length; j < len; j++) {
+        cb = cbs[j];
+        cb(response);
       }
     };
 

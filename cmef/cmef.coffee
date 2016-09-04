@@ -1,6 +1,7 @@
 class window.Timer
   constructor: (@name, @duration) ->
     @running = false
+    @delta = @duration - 1000 # We're displaying at 1 based, not 0 based.
 
     @timer_dom = $("##{@name}.timer")
     @bar_timer_dom = $("##{@name}.bar-timer")
@@ -17,11 +18,10 @@ class window.Timer
 
   start: (cb) ->
     cmef.add_event_callback("timer:#{@name}", cb) if (cb)
-    @epoch_duration = @duration + @epoch()
+    @epoch_duration = parseInt(@duration) + @epoch()
     @running = true
 
     setTimeout(=>
-      console.log("handle event!!")
       cmef.handle_event_response("timer:#{@name}", {})
     , @duration)
     @update_displays(true)
@@ -38,7 +38,7 @@ class window.Timer
 
   update_timer: (schedule) ->
     if @timer_dom.length > 0
-      @schedule_update(1000, @update_timer) if schedule
+      @schedule_update(100, @update_timer) if schedule
       @timer_dom.html(Math.floor(@delta/1000))
 
   update_bar_timer: (schedule) ->
@@ -318,7 +318,7 @@ class CMEF
 
     @load_data()
     @init_handlebars()
-    @handle_event_response('data-ready', {})
+    @handle_event_response_sync('data-ready', {})
 
     @initialized = true
 
@@ -571,6 +571,16 @@ class CMEF
       setTimeout( ->
         cb(response)
       , 1)
+
+    return
+
+  handle_event_response_sync: (event, response) ->
+    cbs = @events[event] if @events.hasOwnProperty(event)
+    @events[event] = []
+    return if !cbs
+
+    for cb in cbs
+      cb(response)
 
     return
 
