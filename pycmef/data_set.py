@@ -5,7 +5,7 @@ from yaml import safe_load
 
 class DataSet:
   def __init__(self, data):
-    self.data = data
+    self.data = data or {}
     self.condition = None
     self.process()
 
@@ -42,7 +42,7 @@ class DataSet:
       items = self.permute_on(key, permutations[key], items)
 
     return items
-  
+
   def permute_on(self, key, to_key, items):
     result = []
 

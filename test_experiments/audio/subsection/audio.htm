@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <script src='../cmef/cmef.js' type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="../cmef/pure.css">
+    <link rel="stylesheet" type="text/css" href="../cmef/cmef.css">
+    <link rel="stylesheet" type="text/css" href="../experiment.css">
+    <title></title>
+    <script>
+      cmef.ready(function() {
+        var action = "play";
+        $('#play').on('click', function(event) {
+          if (action == "play") {
+            action = "stop";
+            cmef.emit('play_audio', { clip: 'test.mp3'}, function(result) {
+              console.log(result);
+            });
+          } else if (action == "stop") {
+            action = "play";
+            cmef.emit('stop_audio', {}, function(result) {
+              console.log(result);
+            });
+          }
+        });
+
+        $('#low').on('click', function(event) {
+          cmef.emit('set_volume', { volume:  25 });
+        });
+        $('#high').on('click', function(event) {
+          cmef.emit('set_volume', { volume:  75 });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="pure-g text-middle">
+      <input type="button" id="play" value="Play/Stop" class="pure-button">
+      <input type="button" id="low" value="Low" class="pure-button">
+      <input type="button" id="high" value="High" class="pure-button">
+    </div>
+  </body>
+
+</html>

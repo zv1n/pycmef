@@ -1,0 +1,13 @@
+{
+   "experiment":"Audio Test",
+   "fullscreen":false,
+   "condition":"A",
+   "sections":[
+      {
+         "name":"subsection",
+         "subsections":[
+           "audio"
+         ]
+      }
+   ]
+}

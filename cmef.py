@@ -10,6 +10,7 @@ from pycmef.experiment import Experiment
 from pycmef.screencap import ScreenCapHandler
 from pycmef.event_handler import *
 
+
 def usage(error = None):
   if error is not None:
     print(error)
@@ -29,8 +30,8 @@ def main(argv):
     usage('Not enough arguments provided.')
 
   try:
-    long_form = ["help", "experiment=", "output=", "pygaze", "audio", "debug"]
-    opts, args = getopt.getopt(argv[1:], "he:o:pad", long_form)
+    long_form = ["help", "experiment=", "output=", "pygaze", "audio", "audio-vlc", "debug"]
+    opts, args = getopt.getopt(argv[1:], "he:o:paAd", long_form)
   except getopt.GetoptError as error:
     usage(str(error))
     sys.exit(2)
@@ -55,7 +56,13 @@ def main(argv):
 
     elif opt in ("-a", "--audio"):
       from pycmef.pyaudio_handler import PyAudioHandler
-      load_pyaudio = True
+      from pycmef.script_player import ScriptPlayer
+      load_pyaudio = ScriptPlayer()
+
+    elif opt in ("-A", "--audio-vlc"):
+      from pycmef.pyaudio_handler import PyAudioHandler
+      from pycmef.vlc_player import VlcPlayer
+      load_pyaudio = VlcPlayer()
 
     elif opt in ("-e", "--experiment="):
       experiment = arg
@@ -100,7 +107,7 @@ def main(argv):
   # Try to instantiate PyAudioHandler if the class exists.
   # Ignore the error if it doesn't.
   if load_pyaudio:
-    audio = PyAudioHandler()
+    audio = PyAudioHandler(load_pyaudio)
     audio.register(exp)
 
   result = exp.run()

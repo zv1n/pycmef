@@ -13,8 +13,4 @@ class DataManagerMixin:
     self.data_dict.print_stats()
 
   def process_data_set(self):
-    try:
-      self.data_dict = DataSet(self.data['data'])
-    except KeyError:
-      print u'Experiment does not contain a dataset.'
-      self.data_dict = None
+    self.data_dict = DataSet(self.data.get('data', None))
