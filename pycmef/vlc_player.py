@@ -8,7 +8,7 @@ class VlcPlayer:
 
   def play(self, path):
     if self.clip is None or path == self.clip:
-        self.media = self.instance.media_new(unicode("file://%s" % path))
+        self.media = self.instance.media_new(path)
         self.mediaplayer.set_media(self.media)
         self.clip = path
 
@@ -23,4 +23,4 @@ class VlcPlayer:
     return self.mediaplayer.audio_get_volume()
 
   def set_volume(self, volume):
-    return self.mediaplayer.audio_set_volume(volume)
+    return self.mediaplayer.audio_set_volume(int(volume))

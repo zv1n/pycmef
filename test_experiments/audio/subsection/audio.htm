@@ -11,31 +11,31 @@
         $('#play').on('click', function(event) {
           if (action == "play") {
             action = "stop";
-            cmef.emit('play_audio', { clip: 'test.mp3'}, function(result) {
-              console.log(result);
-            });
+            cmef.emit('play_audio', { clip: 'test.mp3'});
           } else if (action == "stop") {
             action = "play";
-            cmef.emit('stop_audio', {}, function(result) {
-              console.log(result);
-            });
+            cmef.emit('stop_audio');
           }
         });
 
-        $('#low').on('click', function(event) {
-          cmef.emit('set_volume', { volume:  25 });
-        });
-        $('#high').on('click', function(event) {
-          cmef.emit('set_volume', { volume:  75 });
+        var vc = $('#vol-control');
+        var handle_volume = function(event) {
+          cmef.emit('set_volume', { volume:  $(this).val() });
+        };
+
+        vc.on('input', handle_volume).on('change', handle_volume);
+
+        cmef.emit('get_volume', function(result) {
+          var res = JSON.parse(result);
+          vc.val(res.volume);
         });
       });
     </script>
   </head>
   <body>
     <div class="pure-g text-middle">
-      <input type="button" id="play" value="Play/Stop" class="pure-button">
-      <input type="button" id="low" value="Low" class="pure-button">
-      <input type="button" id="high" value="High" class="pure-button">
+      <input type="button" id="play" value="Play/Stop" class="pure-button"><br/>
+      <input type="range" id="vol-control" min="0" max="100" step="1" style="width: 250px;"></input>
     </div>
   </body>
 
