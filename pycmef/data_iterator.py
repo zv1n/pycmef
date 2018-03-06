@@ -67,7 +67,7 @@ class DataIterator:
 
       for idx in range(len(indexes)):
         self.current_data[idx]['index'] = indexes[idx]
-        self.current_data[idx]['order'] = self.iterator.count() + idx
+        self.current_data[idx]['order'] = idx
 
         print "Order(%s): %s" % (idx, self.iterator.count() + idx)
         print "Index(%s): %s" % (idx, indexes[idx])
