@@ -650,27 +650,27 @@ class CMEF
 
 window.cmef = new CMEF()
 
+window.load_js = (path, callback) ->
+  #console.log('Force loading JQuery...')
+
+  # Adding the script tag to the head as suggested before
+  head = document.getElementsByTagName("head")[0]
+  script = document.createElement("script")
+  script.type = "text/javascript"
+  script.src = path
+
+  # Then bind the event to the callback function.
+  # There are several events for cross browser compatibility.
+  script.onreadystatechange = callback
+  script.onload = callback
+
+  # Fire the loading
+  head.appendChild script
+  return
+
 # Callback triggered when the Python ThinClient is ready.
 window.on_python_ready = ->
   setTimeout(->
-    load_js = (path, callback) ->
-      #console.log('Force loading JQuery...')
-
-      # Adding the script tag to the head as suggested before
-      head = document.getElementsByTagName("head")[0]
-      script = document.createElement("script")
-      script.type = "text/javascript"
-      script.src = path
-
-      # Then bind the event to the callback function.
-      # There are several events for cross browser compatibility.
-      script.onreadystatechange = callback
-      script.onload = callback
-
-      # Fire the loading
-      head.appendChild script
-      return
-
     instantiate_cmef = ->
       cmef.initialize_experiment()
 

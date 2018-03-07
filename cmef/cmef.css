@@ -349,3 +349,7 @@ footer.cmef-buttons.timer-container {
     background-color: grey;
   }
 }
+
+input#begin.pure-button {
+  margin-top: 20px;
+}

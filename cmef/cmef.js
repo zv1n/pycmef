@@ -912,19 +912,20 @@
 
   window.cmef = new CMEF();
 
+  window.load_js = function(path, callback) {
+    var head, script;
+    head = document.getElementsByTagName("head")[0];
+    script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = path;
+    script.onreadystatechange = callback;
+    script.onload = callback;
+    head.appendChild(script);
+  };
+
   window.on_python_ready = function() {
     return setTimeout(function() {
-      var instantiate_cmef, load_js;
-      load_js = function(path, callback) {
-        var head, script;
-        head = document.getElementsByTagName("head")[0];
-        script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = path;
-        script.onreadystatechange = callback;
-        script.onload = callback;
-        head.appendChild(script);
-      };
+      var instantiate_cmef;
       instantiate_cmef = function() {
         return cmef.initialize_experiment();
       };
